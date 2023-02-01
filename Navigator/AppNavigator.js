@@ -7,6 +7,7 @@ import { getData } from "../helpers/secureStore";
 import { DECODE_STATUS } from "../helpers/secureStoreStatuses";
 import * as SplashScreen from 'expo-splash-screen';
 import OnboardingNavigator from "./OnboardingNavigator";
+import { connect } from "react-redux";
 
 const navigatorTheme = (theme) => {
     let themeValues = {}
@@ -23,7 +24,7 @@ SplashScreen.preventAutoHideAsync()
 
 const AppNavigator = (props) => {
     
-    const { theme, isAuthenticated } = props;
+    const { theme, isAuthenticated, onboardingComplete } = props;
 
     const [onboarded, setOnboarded] = useState(null);
     const [appIsReady, setAppIsReady] = useState(false);
@@ -38,7 +39,7 @@ const AppNavigator = (props) => {
     const initAuth = () => {
         return getData('onboarded')
             .then((data) => {
-                return DECODE_STATUS[data]
+                setOnboarded(DECODE_STATUS[data])
             })
     }
 
@@ -56,7 +57,7 @@ const AppNavigator = (props) => {
 
     useEffect(() => {
         initAuth();
-        if (isAuthenticated) {
+        if (onboardingComplete) {
             setOnboarded(true);
         } else {
             setOnboarded(false);
@@ -67,7 +68,7 @@ const AppNavigator = (props) => {
                 SplashScreen.hideAsync();
             }, 1000);
         }
-    }, [isAuthenticated, appIsReady])
+    }, [onboardingComplete, appIsReady])
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme === 'light' ? '#ffffff' : "#222B45"}}>
@@ -82,4 +83,5 @@ const AppNavigator = (props) => {
     )
 };
 
-export default AppNavigator;
+const mapStateToProps = (state) => ({onboardingComplete: state.authReducer.onboarded})
+export default connect(mapStateToProps, null)(AppNavigator);

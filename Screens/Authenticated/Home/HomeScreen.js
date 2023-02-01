@@ -8,6 +8,8 @@ import DailyCheckin from '../../../components/Home/DailyCheckin';
 import FeaturedItems from '../../../components/Home/FeaturedItems';
 import axiosInstance from '../../../config/axiosConfig';
 import authService from '../../../services/AuthService';
+import GenerateArt from '../../../components/Home/GenerateArt';
+import SavedArt from '../../../components/Home/SavedArt';
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back-outline' />
@@ -40,8 +42,10 @@ const HomeScreen = ({ navigation }) => {
 
         <Layout style={styles.container}>
             <ScrollView style={styles.scrollBody}>
-                <DailyCheckin/>
-                <FeaturedItems/>
+                {/* <DailyCheckin/> */}
+                <GenerateArt />
+                {/* <FeaturedItems/> */}
+                <SavedArt />
             </ScrollView>
         </Layout>
     );

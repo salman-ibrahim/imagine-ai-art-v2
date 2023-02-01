@@ -10,6 +10,7 @@ import { deleteData, getData, storeData } from './helpers/secureStore';
 import './config/firebaseConfig';
 import { Provider } from 'react-redux';
 import store from './store';
+import Toast from 'react-native-toast-message';
 
 if(__DEV__) {
     import('./config/reactotronConfig').then(() => console.log('Reactotron Configured'))
@@ -42,6 +43,7 @@ export default (props) => {
                     </SafeAreaProvider>
                 </ApplicationProvider>
             </ThemeContext.Provider>
+            <Toast />
         </Provider>
     )
 };

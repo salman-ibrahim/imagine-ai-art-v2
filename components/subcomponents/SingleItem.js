@@ -3,17 +3,14 @@ import React from "react";
 import { Image, View } from "react-native";
 
 const SingleItem = (props) => {
-    const { id, name, price, image, offerPrice } = props.item;
+    const { id, query, image } = props.item;
 
     const styles = useStyleSheet(themedStyles);
 
     return (
         <View style={styles.container}>
             <Image source={{ uri: image }} style={styles.image} />
-            <Text category="h6">{name}</Text>
-            <Text style={styles.strikethrough}>Rs. {price}</Text>
-            <Text>Rs. {offerPrice}</Text>
-            <Button style={styles.button}>Purchase</Button>
+            <Text category="h6">{query}</Text>
         </View>
     );
 }
@@ -33,12 +30,11 @@ const themedStyles = StyleService.create({
         elevation: 2,
     },
     image: {
-        width: 100,
-        height: 100,
+        width: "100%",
+        
+        aspectRatio:1,
         resizeMode: 'cover',
         borderRadius: 16,
-        borderWidth: 2,
-        borderColor: 'border-basic-color-5',
     },
     strikethrough: {
         textDecorationLine: 'line-through',

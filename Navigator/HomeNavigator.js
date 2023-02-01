@@ -17,10 +17,10 @@ const HomeNavigator = () => (
                     {/* Main Screens */}
                     <Group>
                         <Screen options={{headerShown: false}} name='Home' component={HomeScreen}/>
-                        <Screen options={{headerShown: false}} name='Activity' component={ActivityScreen}/>
-                        <Screen options={{headerShown: false}} name='Exchange' component={ExchangeScreen}/>
-                        <Screen options={{headerShown: false}} name='Invite' component={InviteScreen}/>
-                        <Screen options={{headerShown: false}} name="Profile" component={ProfileScreen} />
+                        {/* <Screen options={{headerShown: false}} name='Activity' component={ActivityScreen}/> */}
+                        <Screen options={{headerShown: false}} name='Store' component={ExchangeScreen}/>
+                        {/* <Screen options={{headerShown: false}} name='Invite' component={InviteScreen}/> */}
+                        <Screen options={{headerShown: false}} name="Settings" component={ProfileScreen} />
                     </Group>
                     {/* Modal Screens */}
                     <Group screenOptions={{presentation: 'modal'}}>

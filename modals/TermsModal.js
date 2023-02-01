@@ -1,17 +1,34 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Card, Modal, Text } from '@ui-kitten/components';
+import { Button, Card, CheckBox, Modal, Text } from '@ui-kitten/components';
 import TermsOfService from '../components/subcomponents/TermsOfService';
 
 const TermsModal = (props) => {
+    const { agreement, handleAgreement } = props;
 
     const [visible, setVisible] = React.useState(false);
-    
+    const [agreed, setAgreed] = React.useState(false);
+
+    const updateAgreement = (agreed) => {
+        setAgreed(agreed);
+        handleAgreement(agreed);
+    }
+
     return (
         <View style={styles.container}>
 
-
-        <Text style={styles.formText}>By signing up you agree to <Text style={styles.link} onPress={() => setVisible(true)}>terms and condition</Text>.</Text>
+        {
+            agreement ?
+            <CheckBox
+            style={{marginTop:10}}
+            checked={agreed}
+            onChange={nextChecked => updateAgreement(nextChecked)}>
+                <View><Text style={styles.formText}>I agree to <Text style={styles.link} onPress={() => setVisible(true)}>terms and condition</Text>.</Text></View>
+            </CheckBox>
+            :
+            <Text style={styles.formText}>By getting started you agree to <Text style={styles.link} onPress={() => setVisible(true)}>terms and condition</Text>.</Text>
+        }
+        
         <Modal
             visible={visible}
             backdropStyle={styles.backdrop}
@@ -23,7 +40,7 @@ const TermsModal = (props) => {
                             <Text>
                                 {/* Data From API */}
                             </Text>
-                            <TermsOfService/>
+                            {/* <TermsOfService/> */}
                         </ScrollView>
                         <Button onPress={() => setVisible(false)}>Okay</Button>
                     </Card>
@@ -38,7 +55,6 @@ export default TermsModal;
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
         textAlign:'left'
     },
     backdrop: {
@@ -48,8 +64,7 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
     },
     formText: {
-        textAlign: 'center',
-        marginTop: 10,
+        fontWeight: 'bold',
     },
     body: {
         borderRadius: 20,

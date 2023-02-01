@@ -2,6 +2,6 @@
 
 // Auth
 export const SET_AUTHENTICATION_STATUS = 'SET_AUTHENTICATION_STATUS';
-
+export const SET_ONBOARDING_STATUS = 'SET_ONBOARDING_STATUS';
 // User
 export const SET_USER = 'SET_USER';
