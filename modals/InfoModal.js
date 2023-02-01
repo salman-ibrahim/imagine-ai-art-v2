@@ -10,7 +10,7 @@ const InfoModal = (props) => {
         toggle();
     }
 
-    const renderInfoIcon = (props) => (
+    const renderInfoIcon = (props) => ( 
         <Icon {...props} name='alert-circle-outline'/>
     );
 
