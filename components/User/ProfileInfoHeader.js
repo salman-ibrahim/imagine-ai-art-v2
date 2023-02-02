@@ -1,6 +1,6 @@
 
 import { useNavigation } from '@react-navigation/native'
-import { Avatar, Button, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
+import { Avatar, Button, Icon, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import CoinIcon from '../../assets/icons/CoinIcon'
@@ -12,16 +12,13 @@ const ProfileInfoHeader = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
-        <Text style={styles.textWhite} category='h4'>John Doe</Text>
-        <View style={styles.balance} >
-          <CoinIcon/>
-          <Text style={styles.textWhite} category='h6'>100</Text>
-        </View>
+        <Text style={styles.textWhite} category='h4'>Imagine - AI Art</Text>
       </View>
 
-      <View style={styles.useImagePlaceholder}>
-        <Avatar style={styles.userImage} source={require('../../assets/profile.jpeg')}/>
-      </View>
+      <View style={styles.balance} >
+          <Text style={styles.textWhite} category='h6'>100</Text>
+          <Icon fill='white' name='brush-outline' height={30} width={30} />
+        </View>
     </View>
   )
 }

@@ -1,17 +1,24 @@
+import { useNavigation } from "@react-navigation/native";
 import { Button, StyleService, Text, useStyleSheet } from "@ui-kitten/components";
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 const SingleItem = (props) => {
     const { id, query, image } = props.item;
 
     const styles = useStyleSheet(themedStyles);
+    const navigation = useNavigation();
 
+    const viewArt = () => {
+        navigation.navigate("ArtModal", { id, query, image });
+    }
     return (
         <View style={styles.container}>
-            <Image source={{ uri: image }} style={styles.image} />
-            <Text category="h6">{query}</Text>
-        </View>
+                <TouchableOpacity onPress={viewArt}>
+                <Image source={{ uri: image }} style={styles.image} />
+        </TouchableOpacity>
+                <Text category="h6">{query}</Text>
+            </View>
     );
 }
 

@@ -23,7 +23,7 @@ const OnboardingScreen = () => {
 
   const handleOnboardingDone = () => {
     if (!termsAgreed) {
-      toastError('You must agree to Terms and Conditions.');
+      toastInfo('You must agree to Terms and Conditions.');
     } else {
       storeData('onboarded', 'TRUE')
       store.dispatch(setOnboardingStatusAction(true))

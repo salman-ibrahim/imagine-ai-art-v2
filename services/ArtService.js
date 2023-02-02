@@ -2,8 +2,7 @@ import { getData } from "../helpers/secureStore";
 import ApiService from "./ApiService";
 
 const ENDPOINTS = {
-    LOGIN: '/login',
-    REGISTER: '/register'
+    PLACE_PREDICTION_JOB: '/v1/predictions',
 }
 
 class ArtService extends ApiService {
@@ -28,20 +27,9 @@ class ArtService extends ApiService {
         }
     };
 
-    login  = async (data) => {
+    placeArtJob = async (data) => {
         try {
-            const response = await this.apiClient.post(ENDPOINTS.LOGIN, data);
-            console.log(response);
-            return Promise.resolve(response);
-        }
-        catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
-    register = async (data) => {
-        try {
-            const response = await this.apiClient.post(ENDPOINTS.REGISTER, data);
+            const response = await this.apiClient.post(ENDPOINTS.PLACE_PREDICTION_JOB, data);
             console.log(response);
             return Promise.resolve(response);
         }

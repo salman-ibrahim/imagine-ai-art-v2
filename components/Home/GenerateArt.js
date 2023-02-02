@@ -1,6 +1,8 @@
+import { useNavigation } from '@react-navigation/native';
 import { Button, Divider, Icon, Input, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
 import React from 'react'
 import { ScrollView, View } from 'react-native';
+import { toastInfo } from '../../helpers/toasts';
 
 const useInputState = (initialValue = '') => {
     const [value, setValue] = React.useState(initialValue);
@@ -10,11 +12,16 @@ const useInputState = (initialValue = '') => {
 const GenerateArt = () => {
 
     const styles = useStyleSheet(themedStyles);
-    
+    const navigator = useNavigation();
+
     const multilineInputState = useInputState();
     const checkIcon = (props) => (
         <Icon {...props} name='checkmark-outline'/>
     );
+
+    const handleGenerateArt = () => {
+        navigator.navigate('ArtModal')
+    }
 
     return (
         <View style={styles.container}>
@@ -22,13 +29,14 @@ const GenerateArt = () => {
             <View horizontal style={styles.pointsContainer}>
                 <Input
                     multiline={true}
-                    textStyle={{ maxHeight: 70 }}
+                    style={styles.input}
+                    textStyle={{ maxHeight: 70, minHeight: 30 }}
                     placeholder='Astronaut Riding Horse on Mars'
                     {...multilineInputState}
                 />
             </View>
 
-            <Button style={styles.button} appearance='controlled'>Generate Art</Button>
+            <Button style={styles.button} onPress={handleGenerateArt}>Generate Art</Button>
         </View>
     )
 }
@@ -83,11 +91,15 @@ const themedStyles = StyleService.create({
     },    
     button: {
         marginTop: 20,
+        borderRadius:10
     },
     tintColor: {
         tintColor: 'text-basic-color'
     },
     heading: {
         marginVertical: 16,
+    },
+    input: {
+        borderRadius:10
     }
 });
