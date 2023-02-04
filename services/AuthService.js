@@ -31,7 +31,6 @@ class AuthService extends ApiService {
     login  = async (data) => {
         try {
             const response = await this.apiClient.post(ENDPOINTS.LOGIN, data);
-            console.log(response);
             return Promise.resolve(response);
         }
         catch (e) {
@@ -42,7 +41,6 @@ class AuthService extends ApiService {
     register = async (data) => {
         try {
             const response = await this.apiClient.post(ENDPOINTS.REGISTER, data);
-            console.log(response);
             return Promise.resolve(response);
         }
         catch (e) {

@@ -1,26 +1,53 @@
 import { useNavigation } from '@react-navigation/native';
-import { Button, Divider, Icon, Input, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
+import { Button, Divider, Icon, Input, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
 import React from 'react'
 import { ScrollView, View } from 'react-native';
-import { toastInfo } from '../../helpers/toasts';
+import { toastError, toastInfo } from '../../helpers/toasts';
+import artService from '../../services/ArtService';
 
 const useInputState = (initialValue = '') => {
     const [value, setValue] = React.useState(initialValue);
     return { value, onChangeText: setValue };
 };
 
+const checkIcon = (props) => (
+    <Icon {...props} name='checkmark-outline'/>
+);
+
+const arrowRightIcon = (props) => (
+    <Icon {...props} name='arrow-circle-right-outline'/>
+);
+
 const GenerateArt = () => {
 
     const styles = useStyleSheet(themedStyles);
     const navigator = useNavigation();
 
+    const [loading, setLoading] = React.useState(false);
+    const [data, setData] = React.useState({});
+
     const multilineInputState = useInputState();
-    const checkIcon = (props) => (
-        <Icon {...props} name='checkmark-outline'/>
-    );
 
     const handleGenerateArt = () => {
-        navigator.navigate('ArtModal')
+        if(!loading) {
+            if(multilineInputState.value.trim() !== "") {
+                setLoading(true)
+                toastInfo('Generating Art');
+                artService.placeArtJob(multilineInputState.value).then((response) => {
+                    setData(response);
+                    setLoading(false);
+
+                    navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, status: 'starting' });
+
+                }).catch((err) => {
+                    setLoading(false);
+                    toastError('Something went wrong');
+                })
+            }
+            else {
+                toastInfo('Please enter some text');
+            }
+        }
     }
 
     return (
@@ -36,7 +63,7 @@ const GenerateArt = () => {
                 />
             </View>
 
-            <Button style={styles.button} onPress={handleGenerateArt}>Generate Art</Button>
+            <Button style={loading? styles.buttonDisabled : styles.button} onPress={handleGenerateArt} accessoryRight={ loading ? '' : arrowRightIcon}> { loading ? <Spinner /> : 'Generate Art' }</Button>
         </View>
     )
 }
@@ -92,6 +119,12 @@ const themedStyles = StyleService.create({
     button: {
         marginTop: 20,
         borderRadius:10
+    },
+    buttonDisabled: {
+        marginTop: 20,
+        borderRadius:10,
+        backgroundColor: 'color-basic-600',
+        borderColor: 'color-basic-600'
     },
     tintColor: {
         tintColor: 'text-basic-color'

@@ -10,13 +10,13 @@ const SingleItem = (props) => {
     const navigation = useNavigation();
 
     const viewArt = () => {
-        navigation.navigate("ArtModal", { id, query, image });
+        navigation.navigate("ArtModal", { id, query, image, status: 'succeeded'});
     }
     return (
         <View style={styles.container}>
                 <TouchableOpacity onPress={viewArt}>
-                <Image source={{ uri: image }} style={styles.image} />
-        </TouchableOpacity>
+                    <Image source={{ uri: image }} style={styles.image} />
+                </TouchableOpacity>
                 <Text category="h6">{query}</Text>
             </View>
     );

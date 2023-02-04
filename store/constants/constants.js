@@ -9,3 +9,6 @@ export const SET_USER = 'SET_USER';
 
 // Interface
 export const SET_PROFILE_HEADER_VISIBLE = 'SET_PROFILE_HEADER_VISIBLE';
+
+// Art
+export const SAVE_GENERATED_ART = 'SAVE_GENERATED_ART';

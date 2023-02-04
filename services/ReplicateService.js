@@ -48,7 +48,7 @@ class ReplicateService {
 const options = {
   baseURL: PREDICTION_MODEL_STABLE_DIFFUSION_URL
 };
-console.log("base url is ", PREDICTION_MODEL_STABLE_DIFFUSION_URL)
+console.log("replicate url is ", PREDICTION_MODEL_STABLE_DIFFUSION_URL)
 const replicateService = new ReplicateService(options);
 
 export default replicateService;
