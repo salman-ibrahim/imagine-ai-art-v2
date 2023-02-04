@@ -4,20 +4,20 @@ import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 
 const SingleItem = (props) => {
-    const { id, query, image } = props.item;
-
+    const { id, query, image, source } = props.item;
     const styles = useStyleSheet(themedStyles);
     const navigation = useNavigation();
 
     const viewArt = () => {
-        navigation.navigate("ArtModal", { id, query, image, status: 'succeeded'});
+        navigation.navigate("ArtModal", { id, query, image, source, status: 'succeeded'});
     }
+    
     return (
         <View style={styles.container}>
                 <TouchableOpacity onPress={viewArt}>
                     <Image source={{ uri: image }} style={styles.image} />
                 </TouchableOpacity>
-                <Text category="h6">{query}</Text>
+                <Text category="h6" style={styles.text}>{query}</Text>
             </View>
     );
 }
@@ -43,11 +43,8 @@ const themedStyles = StyleService.create({
         resizeMode: 'cover',
         borderRadius: 16,
     },
-    strikethrough: {
-        textDecorationLine: 'line-through',
-        color: 'color-basic-600',
-    },
-    button: {
+    text: {
         marginTop: 10,
+        marginHorizontal: 5,
     }
 });

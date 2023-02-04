@@ -1,4 +1,3 @@
-import { getData } from "../helpers/secureStore";
 import PredictionService from "./PredictionService";
 
 const ENDPOINTS = {
@@ -26,7 +25,7 @@ class ArtService extends PredictionService {
     
     setAuthorizationHeader = async () => {
         this.api.attachHeaders({
-            Authorization: 'Token 9330e4ad7a3c1a2e2bf4f7ed4fe23605541eaf3b'
+            Authorization: 'Token a2f78985e8c032005c2cc43ccc70d0c809cc4e2d'
         });
     };
 

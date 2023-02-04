@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Divider, Icon, Layout, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components';
 import { ThemeContext } from '../../../Theme/theme-context';
 import { logoutUser } from '../../../helpers/firebaseAuth';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import DailyCheckin from '../../../components/Home/DailyCheckin';
 import FeaturedItems from '../../../components/Home/FeaturedItems';
 import axiosInstance from '../../../config/axiosConfig';
@@ -41,12 +41,12 @@ const HomeScreen = ({ navigation }) => {
     return (
 
         <Layout style={styles.container}>
-            <ScrollView style={styles.scrollBody}>
+            {/* <View style={styles.scrollBody}> */}
                 {/* <DailyCheckin/> */}
-                <GenerateArt />
+                {/* <GenerateArt /> */}
                 {/* <FeaturedItems/> */}
                 <SavedArt />
-            </ScrollView>
+            {/* </View> */}
         </Layout>
     );
 };
@@ -57,9 +57,11 @@ const themedStyles = StyleService.create({
     container: {
         flex: 1,
         paddingHorizontal: 16,
+        paddingVertical: 16,
         backgroundColor: 'background-basic-color-2',
         borderTopRightRadius: 25,
         borderTopLeftRadius: 25,
+        overflow: 'visible'
     },
     scrollBody: {
         flex: 1,

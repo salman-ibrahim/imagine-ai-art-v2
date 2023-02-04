@@ -1,11 +1,12 @@
-import { Image, View } from 'react-native'
+import { View } from 'react-native'
 import React, { useEffect } from 'react'
 import { Button, Icon, Spinner, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import { toastError, toastSuccess } from '../../../helpers/toasts'
 import ArtActions from '../../../components/Art/ArtActions'
 import artService from '../../../services/ArtService'
 import { convertImageToBase64 } from '../../../helpers/imageHelpers'
+import Base64Image from '../../../components/subcomponents/Base64Image'
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
@@ -15,37 +16,73 @@ const CrossIcon = (props) => (
     <Icon {...props} name='close-circle-outline' />
 )
 
+/**
+ * Screen to display the generated art
+ * @param {Object} navigation - React native navigation object
+ * @param {Object} route - React native route object to fetch passed params
+ * @returns Generate Art Screen
+ */
 const Art = ({ navigation, route }) => {
 
-    const { id, query, image, status } = route.params
+    const { id, query, image, source, status } = route.params
 
     const styles = useStyleSheet(themedStyles);
     
     const [art, setArt] = React.useState({})
     const [artStatus, setArtStatus] = React.useState(status)
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(status == "starting")
     const [intervalId, setIntervalId] = React.useState(null)
 
-    useEffect(() => {
-        iniStates()
-        const interval = setInterval(() => {
-            if(artStatus == 'starting' || artStatus == 'processing') {
-                callFetchApi()
+
+    /**
+     * Initialize states that identify if the art is being generated or previous art is being fetched
+     */
+    useFocusEffect(
+        React.useCallback(() => {
+            
+            iniStates()
+            
+            if(status == 'starting' || status == 'processing') {
+                setLoading(true)
+                setArtStatus(status)
             }
-        } , 5000)
+        }, [id])
+    );
 
-        setIntervalId(interval)
 
-        return () => clearInterval(interval);
-    }, [id])
+    /**
+     * Start polling for art status if this is a new art generation
+     */
+    useEffect(() => {
+        if(status == 'starting' || status == 'processing') {
+            const interval = setInterval(() => {
+                if(artStatus == 'starting' || artStatus == 'processing') {
+                    callFetchApi()
+                }
+            } , 5000)
 
-    // Clear interval on status change
+            setIntervalId(interval)
+        }
+
+    }, [artStatus])
+
+
+    /**
+     * Clear interval when art is generated or failed so the polling stops
+     */
     useEffect(() => {
         if(artStatus == 'succeeded' || artStatus == 'failed') {
             clearInterval(intervalId);
         }
+
+        return () => {
+            clearInterval(intervalId);
+        }
     }, [artStatus])
 
+    /**
+     * Call the fetch API to get the art status
+     */
     const callFetchApi = () => {
         
         if(!loading){
@@ -53,14 +90,16 @@ const Art = ({ navigation, route }) => {
         }
         
         artService.fetchArt(id)
-            .then((response) => {
-                console.log("RESULT",response);
+            .then( async (response) => {
+                console.log("RESULT",response.status);
                 setArtStatus(response.status)
                 if(response.status == 'succeeded') {
+                    const base64Image = await convertImageToBase64(response.output[0])
                     setArt({
                         id: response.id,
                         query: response.input.prompt,
-                        image: convertImageToBase64(response.output[0]),
+                        image: base64Image,
+                        source: response.output[0]
                     })
                     setLoading(false)
                     toastSuccess('Art generated successfully');
@@ -76,25 +115,51 @@ const Art = ({ navigation, route }) => {
             })
     }
 
+    /**
+     * Initialize states
+     */
     const iniStates = () => {
         if(id != art.id) {
             setArt({
                 id: id,
                 query: query,
                 image: image,
+                source: source
             })
             setArtStatus(status)
         }
+        if(image != null) {
+            setLoading(false)
+        }
     }
 
+    /**
+     * Reset states
+     */
+    const resetStates = () => {
+        setArt({})
+        setArtStatus('succeeded')
+        setLoading(true)
+    }
+
+    /**
+     * Navigate back to the previous screen
+     */
     const navigateBack = () => {
         navigation.goBack()
     }
     
+    /**
+     * Renders back button on top navigation
+     * @returns Back button
+     */
     const BackAction = () => (
         <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
     )
         
+    /**
+     * Handle cancel button click to stop the art generation
+     */
     const handleCancel = () => {
         // Cancel the art generation
     }
@@ -113,7 +178,7 @@ const Art = ({ navigation, route }) => {
                             <Text>Generating your art, this may take upto 15 seconds.</Text>
                         </>
                         :
-                        <Image source={{ uri: `data:image/png;base64,${art.image}` }} style={styles.art}/>
+                        <Base64Image image={art.image} style={styles.art}/>
                     }
                 </View>
                 {
@@ -156,7 +221,7 @@ const themedStyles = StyleService.create({
         borderRadius:10
     },
     text: {
-        marginTop: 20,
+        marginTop: 10,
         textAlign: 'center'
     }
 })

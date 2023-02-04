@@ -1,6 +1,9 @@
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 import { toastError } from './toasts';
+import { convertStringToSlug } from './commonHelpers';
+import { Share } from 'react-native';
 
 export const convertImageToBase64 = (url) => {
     return new Promise((resolve, reject) => {
@@ -18,38 +21,63 @@ export const convertImageToBase64 = (url) => {
     });
 }
 
-export const downloadImageToDCIM = async (image, name) => {
-    const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${image}`);
-    const album = await MediaLibrary.getAlbumAsync('Imagine');
+export const downloadImageToDCIM = async (image, name, source) => {
+    try{
+        const imageUri = FileSystem.cacheDirectory + name+'.png';
+        const base64Image = image.replace('data:application/octet-stream;base64,','');
+        await FileSystem.writeAsStringAsync(imageUri, base64Image, { encoding: FileSystem.EncodingType.Base64 });
 
-    if (album) {
-      await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-    } else {
-      await MediaLibrary.createAlbumAsync('Imagine', asset, false);
+        const asset = await MediaLibrary.createAssetAsync(imageUri);    
+        const album = await MediaLibrary.getAlbumAsync('Imagine');
+
+        if (album) {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+        } else {
+        await MediaLibrary.createAlbumAsync('Imagine', asset, false);
+        }
     }
-
-    await MediaLibrary.createAssetAsync(asset.uri, imageName);
+    catch(error){
+        console.log("FAILED",error);
+    }
 }
 
-export const shareImage = async (image, message = '') => {
-    const result = await Sharing.shareAsync(image, {
+export const shareImage = async (image, query, message = '') => {
+    // try {
+    //     const name = await convertStringToSlug(query);
+    //     const imageUri = FileSystem.cacheDirectory + name + '.png';
+    //     const base64Image = image.replace('data:application/octet-stream;base64,', '');
+    //     await FileSystem.writeAsStringAsync(imageUri, base64Image, { encoding: FileSystem.EncodingType.Base64, mimeType: 'image/png' });
+
+    //     console.log("imageUri", imageUri);
+    //     await Share.share({
+    //         title: 'Share the Image',
+    //         url: imageUri,
+    //         message: imageUri,
+    //     });
+
+    //     await FileSystem.deleteAsync(imageUri);
+    // } 
+    // catch (error) {
+    //     console.error(error);
+    // }
+
+    const name = await convertStringToSlug(query)
+    const imageUri = FileSystem.cacheDirectory + name+'.png';
+    const base64Image = image.replace('data:application/octet-stream;base64,','');
+    await FileSystem.writeAsStringAsync(imageUri, base64Image, { encoding: FileSystem.EncodingType.Base64 });
+    
+    await Sharing.shareAsync(imageUri, {
         mimeType: 'image/png',
-        dialogTitle: 'Share the image',
-        message: message,
+        dialogTitle: message.replace('{image}', query),
     });
-    if (result.action === Sharing.sharedAction) {
-        console.log('Image was shared successfully');
-    } else {
-        toastError("Something went wrong while sharing.")
-    }
+
 }
 
-const getCameraRollPermission = async () => {
+export const requestCameraRollPermission = async () => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status === 'granted') {
-      return true;
+      return Promise.resolve(true);
     } else {
-      console.error('Camera roll permission was denied');
-      return false;
+      return Promise.reject(false);
     }
 };

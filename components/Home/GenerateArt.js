@@ -37,7 +37,7 @@ const GenerateArt = () => {
                     setData(response);
                     setLoading(false);
 
-                    navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, status: 'starting' });
+                    navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, source: null, status: 'starting' });
 
                 }).catch((err) => {
                     setLoading(false);
