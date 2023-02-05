@@ -15,7 +15,8 @@
         "FIREBASE_STORAGE_BUCKET": "task-app-25bd1.appspot.com",
         "FIREBASE_MESSAGING_SENDER_ID": "361155148588",
         "FIREBASE_APP_ID": "1:361155148588:web:6b6e09173eeab671b54a89",
-        "FIREBASE_MEASUREMENT_ID": "G-00LDV0T5L2"
+        "FIREBASE_MEASUREMENT_ID": "G-00LDV0T5L2",
+        "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
       }
     },
     "staging" : {
@@ -30,13 +31,26 @@
         "FIREBASE_STORAGE_BUCKET": "task-app-25bd1.appspot.com",
         "FIREBASE_MESSAGING_SENDER_ID": "361155148588",
         "FIREBASE_APP_ID": "1:361155148588:web:6b6e09173eeab671b54a89",
-        "FIREBASE_MEASUREMENT_ID": "G-00LDV0T5L2"
+        "FIREBASE_MEASUREMENT_ID": "G-00LDV0T5L2",
+        "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
       }
     },
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env": {
+        "API_BASE_URL": "stage-api.task-app.com",
+        "FIREBASE_API_KEY": "AIzaSyCnLJpeedhqDmtQiyU-WrzzRcK01qPcUOw",
+        "FIREBASE_AUTH_DOMAIN": "task-app-25bd1.firebaseapp.com",
+        "FIREBASE_PROJECT_ID": "task-app-25bd1",
+        "FIREBASE_STORAGE_BUCKET": "task-app-25bd1.appspot.com",
+        "FIREBASE_MESSAGING_SENDER_ID": "361155148588",
+        "FIREBASE_APP_ID": "1:361155148588:web:6b6e09173eeab671b54a89",
+        "FIREBASE_MEASUREMENT_ID": "G-00LDV0T5L2",
+        "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
+      }
+    }
   },
   "submit": {
     "production": {}

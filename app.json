@@ -18,12 +18,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.gamearina.taskapp",
+      "bundleIdentifier": "com.gamearina.imagine",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "com.gamearina.taskapp",
+      "package": "com.gamearina.imagine",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -32,6 +32,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "608f609f-2f34-48bd-b9b7-2d93027bb216"
+      }
     }
   }
 }

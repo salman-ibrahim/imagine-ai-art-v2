@@ -1,7 +1,8 @@
 import axios from 'axios';
-import getEnvVars from '../environment';
+// import getEnvVars from '../environment';
+import Constants from 'expo-constants';
 
-const {API_BASE_URL} = getEnvVars();
+// const {API_BASE_URL} = getEnvVars();
 
 class HttpService {
   constructor(options = {}) {
@@ -46,9 +47,9 @@ class HttpService {
 }
 
 const options = {
-  baseURL: API_BASE_URL
+  baseURL: Constants.expoConfig.extra.API_BASE_URL,
 };
-console.log("base url is ", API_BASE_URL)
+console.log("base url is ", options.baseURL)
 const httpService = new HttpService(options);
 
 export default httpService;
