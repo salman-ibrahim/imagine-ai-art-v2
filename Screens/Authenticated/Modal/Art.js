@@ -7,6 +7,7 @@ import ArtActions from '../../../components/Art/ArtActions'
 import artService from '../../../services/ArtService'
 import { convertImageToBase64 } from '../../../helpers/imageHelpers'
 import Base64Image from '../../../components/subcomponents/Base64Image'
+import { refundArtworkPriceToWallet } from '../../../helpers/walletHelpers'
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
@@ -111,6 +112,7 @@ const Art = ({ navigation, route }) => {
             }).catch((err) => {
                 toastError('Something went wrong, please try again later');
                 setArtStatus('failed')
+                refundArtworkPriceToWallet()
                 navigateBack()
             })
     }

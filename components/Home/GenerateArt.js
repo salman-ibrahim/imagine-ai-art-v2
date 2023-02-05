@@ -2,8 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Button, Divider, Icon, Input, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
 import React from 'react'
 import { ScrollView, View } from 'react-native';
+import { deductArtworkPriceFromWallet } from '../../helpers/walletHelpers';
 import { toastError, toastInfo } from '../../helpers/toasts';
 import artService from '../../services/ArtService';
+import store from '../../store';
+import { defaults } from '../../values/defaults';
 
 const useInputState = (initialValue = '') => {
     const [value, setValue] = React.useState(initialValue);
@@ -29,6 +32,14 @@ const GenerateArt = () => {
     const multilineInputState = useInputState();
 
     const handleGenerateArt = () => {
+        const wallet = store.getState().userReducer.wallet;
+        const artCost = defaults.artCost;
+
+        if(wallet < artCost) {
+            toastInfo('You do not have enough balance to generate art', 'Oops!');
+            return;
+        }
+
         if(!loading) {
             if(multilineInputState.value.trim() !== "") {
                 setLoading(true)
@@ -36,7 +47,7 @@ const GenerateArt = () => {
                 artService.placeArtJob(multilineInputState.value).then((response) => {
                     setData(response);
                     setLoading(false);
-
+                    deductArtworkPriceFromWallet()
                     navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, source: null, status: 'starting' });
 
                 }).catch((err) => {

@@ -6,6 +6,7 @@ export const SET_ONBOARDING_STATUS = 'SET_ONBOARDING_STATUS';
 
 // User
 export const SET_USER = 'SET_USER';
+export const SET_USER_WALLET = 'SET_USER_WALLET';
 
 // Interface
 export const SET_PROFILE_HEADER_VISIBLE = 'SET_PROFILE_HEADER_VISIBLE';
