@@ -24,4 +24,7 @@ export const strings = {
     // Errors
     somethingWentWrong: 'Something went wrong, please try again',
 
+    // Share message
+    shareMessage: 'I generated this "{image}" using "IMAGINE - AI ART" app. This app converts imaginations into art. Download the app now to generate your own art. https://play.google.com/store/apps/details?id=com.gamearina.imagine',
+
 }

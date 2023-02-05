@@ -1,13 +1,35 @@
 
 import { useNavigation } from '@react-navigation/native'
-import { Avatar, Button, Icon, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
-import React from 'react'
+import { Avatar, Button, Icon, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { useEffect } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
+import { connect } from 'react-redux'
 import CoinIcon from '../../assets/icons/CoinIcon'
+import { getData, storeData } from '../../helpers/secureStore'
+import store from '../../store'
+import { setUserWalletAction } from '../../store/actions/userActions'
 
 const ProfileInfoHeader = (props) => {
 
+  const { wallet } = props
   const styles = useStyleSheet(themedStyles)
+
+  const [loading, setLoading] = React.useState(true)
+
+  useEffect(() => {
+    getData('wallet')
+    .then((wallet) => {
+      if(wallet == undefined) {
+        storeData('wallet', '100')
+        store.dispatch(setUserWalletAction(100))
+      }
+      else {
+        const balance = parseInt(wallet, 10)
+        store.dispatch(setUserWalletAction(balance))
+      }
+      setLoading(false)
+    })
+  },[])
 
   return (
     <View style={styles.container}>
@@ -16,14 +38,22 @@ const ProfileInfoHeader = (props) => {
       </View>
 
       <View style={styles.balance} >
-          <Text style={styles.textWhite} category='h6'>100</Text>
-          <Icon fill='white' name='brush-outline' height={30} width={30} />
+        {
+          loading ?
+            <Spinner />
+            :
+            <>
+              <Text style={styles.textWhite} category='h6'>{wallet}</Text>
+              <Icon fill='white' name='brush-outline' height={30} width={30} />
+            </>
+        }
         </View>
     </View>
   )
 }
 
-export default ProfileInfoHeader
+const mapStateToProps = (state) => ({wallet: state.userReducer.wallet})
+export default connect(mapStateToProps, null) (ProfileInfoHeader);
 
 const themedStyles = StyleService.create({
     container: {
