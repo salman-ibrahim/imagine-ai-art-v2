@@ -52,6 +52,7 @@ const GenerateArt = () => {
 
                 }).catch((err) => {
                     setLoading(false);
+                    console.log(err);
                     toastError('Something went wrong');
                 })
             }

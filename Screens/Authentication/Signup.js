@@ -5,7 +5,7 @@ import { Image, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'r
 import BottomSheetAdapter from '../../adapters/BottomSheetAdapter';
 import TermsModal from '../../modals/TermsModal';
 // import SocialAuth from '../../components/SocialAuth';
-import { registerWithEmailAndPassword } from '../../helpers/firebaseAuth';
+// import { registerWithEmailAndPassword } from '../../helpers/firebaseAuth';
 import ErrorModal from '../../modals/ErrorModal';
 import { useForm, Controller } from "react-hook-form";
 import InfoModal from '../../modals/InfoModal';
@@ -89,41 +89,41 @@ const Signup = ({ navigation }) => {
         let password = data.password;
         let name = data.name;
         let dob = data.dateOfBirth;
-        registerWithEmailAndPassword(email, password, name, dob)
-        .then((userCredential) => {
-            console.log('userCredential', userCredential);
-            var user = userCredential?.user;
+        // registerWithEmailAndPassword(email, password, name, dob)
+        // .then((userCredential) => {
+        //     console.log('userCredential', userCredential);
+        //     var user = userCredential?.user;
 
-            if(user) {
-                setInfoMessage(strings.verificationEmailSent);
-                setInfoVisible(true);
-            }
-        })
-        .catch((error) => {
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    setErrorMessage(strings.emailAlreadyInUse);
-                    setErrorVisible(true);
-                    break;
-                case 'auth/invalid-email':
-                    setErrorMessage(strings.invalidEmail);
-                    setErrorVisible(true);
-                    break;
-                case 'auth/operation-not-allowed':
-                    // console.log(`ERROR: Error during sign up.`);
-                    setErrorMessage(strings.operationNotAllowed);
-                    setErrorVisible(true);
-                    break;
-                case 'auth/weak-password':
-                    setErrorMessage(strings.weakPassword);
-                    setErrorVisible(true);
-                    break;
-                default:
-                    setErrorMessage(strings.somethingWentWrong);
-                    setErrorVisible(true);
-                    break;
-              }
-        });
+        //     if(user) {
+        //         setInfoMessage(strings.verificationEmailSent);
+        //         setInfoVisible(true);
+        //     }
+        // })
+        // .catch((error) => {
+        //     switch (error.code) {
+        //         case 'auth/email-already-in-use':
+        //             setErrorMessage(strings.emailAlreadyInUse);
+        //             setErrorVisible(true);
+        //             break;
+        //         case 'auth/invalid-email':
+        //             setErrorMessage(strings.invalidEmail);
+        //             setErrorVisible(true);
+        //             break;
+        //         case 'auth/operation-not-allowed':
+        //             // console.log(`ERROR: Error during sign up.`);
+        //             setErrorMessage(strings.operationNotAllowed);
+        //             setErrorVisible(true);
+        //             break;
+        //         case 'auth/weak-password':
+        //             setErrorMessage(strings.weakPassword);
+        //             setErrorVisible(true);
+        //             break;
+        //         default:
+        //             setErrorMessage(strings.somethingWentWrong);
+        //             setErrorVisible(true);
+        //             break;
+        //       }
+        // });
     }
 
     const renderCaption = () => {

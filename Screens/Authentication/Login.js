@@ -3,7 +3,7 @@ import { Button, Card, Divider, Icon, Input, Layout, StyleService, Text, useStyl
 import { ThemeContext } from '../../Theme/theme-context';
 import { Image, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 // import SocialAuth from '../../components/SocialAuth';
-import { loginWithEmailAndPassword } from '../../helpers/firebaseAuth';
+// import { loginWithEmailAndPassword } from '../../helpers/firebaseAuth';
 import ErrorModal from '../../modals/ErrorModal';
 import InfoModal from '../../modals/InfoModal';
 import { strings } from '../../values/strings';
@@ -92,52 +92,52 @@ const Login = (props) => {
         let email = data.email;
         let password = data.password;
 
-        loginWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Signed in 
-            var user = userCredential?.user;
+        // loginWithEmailAndPassword(email, password)
+        // .then((userCredential) => {
+        //     // Signed in 
+        //     var user = userCredential?.user;
 
-            if (user.emailVerified) {
-                setAuthenticationStatusAction(true);
-            }
-            else if (user.emailVerified === false){
-                setInfoMessage(strings.accountNotVerified);
-                setInfoVisible(true);
-            }
-            else {
-                setErrorMessage(strings.somethingWentWrong);
-                setErrorVisible(true);
-            }
-        })
-        .catch((error) => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
+        //     if (user.emailVerified) {
+        //         setAuthenticationStatusAction(true);
+        //     }
+        //     else if (user.emailVerified === false){
+        //         setInfoMessage(strings.accountNotVerified);
+        //         setInfoVisible(true);
+        //     }
+        //     else {
+        //         setErrorMessage(strings.somethingWentWrong);
+        //         setErrorVisible(true);
+        //     }
+        // })
+        // .catch((error) => {
+        //     var errorCode = error.code;
+        //     var errorMessage = error.message;
 
-            if(errorCode === 'auth/wrong-password'){
-                setErrorMessage(strings.wrongPassword);
-                setErrorVisible(true);
-            }
-            else if(errorCode === 'auth/user-not-found'){
-                setErrorMessage(strings.userNotFound);
-                setErrorVisible(true);
-            }
-            else if(errorCode === 'auth/invalid-email'){
-                setErrorMessage(strings.invalidEmail);
-                setErrorVisible(true);
-            }
-            else if(errorCode === 'auth/user-disabled'){
-                setErrorMessage(strings.accountDisabled);
-                setErrorVisible(true);
-            }
-            else if(errorCode === 'auth/too-many-requests'){
-                setErrorMessage(strings.tooManyRequests);
-                setErrorVisible(true);
-            }
-            else {
-                setErrorMessage(strings.somethingWentWrong+" "+errorMessage);
-                setErrorVisible(true);
-            }
-        })
+        //     if(errorCode === 'auth/wrong-password'){
+        //         setErrorMessage(strings.wrongPassword);
+        //         setErrorVisible(true);
+        //     }
+        //     else if(errorCode === 'auth/user-not-found'){
+        //         setErrorMessage(strings.userNotFound);
+        //         setErrorVisible(true);
+        //     }
+        //     else if(errorCode === 'auth/invalid-email'){
+        //         setErrorMessage(strings.invalidEmail);
+        //         setErrorVisible(true);
+        //     }
+        //     else if(errorCode === 'auth/user-disabled'){
+        //         setErrorMessage(strings.accountDisabled);
+        //         setErrorVisible(true);
+        //     }
+        //     else if(errorCode === 'auth/too-many-requests'){
+        //         setErrorMessage(strings.tooManyRequests);
+        //         setErrorVisible(true);
+        //     }
+        //     else {
+        //         setErrorMessage(strings.somethingWentWrong+" "+errorMessage);
+        //         setErrorVisible(true);
+        //     }
+        // })
     }
 
     return (

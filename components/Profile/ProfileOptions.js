@@ -9,7 +9,7 @@ import ReceiptIcon from '../../assets/icons/ReceiptIcon';
 import StarIcon from '../../assets/icons/StarIcon';
 import ThemeIcon from '../../assets/icons/ThemeIcon';
 import WalletIcon from '../../assets/icons/WalletIcon';
-import { logoutUser } from '../../helpers/firebaseAuth';
+// import { logoutUser } from '../../helpers/firebaseAuth';
 import { getData } from '../../helpers/secureStore';
 import { ThemeContext } from '../../Theme/theme-context';
 
@@ -45,13 +45,13 @@ const ProfileOptions = () => {
     }
 
     const handleLogout = () => {
-        logoutUser()
-            .then(() => {
-                console.log("LOGOUT SUCCESS");
-            })
-            .catch((error) => {
-                console.log("LOGOUT FAILED: ", error);
-            });
+        // logoutUser()
+        //     .then(() => {
+        //         console.log("LOGOUT SUCCESS");
+        //     })
+        //     .catch((error) => {
+        //         console.log("LOGOUT FAILED: ", error);
+        //     });
     }
 
     return (

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, Divider, Icon, Input, Layout, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
 import { ThemeContext } from '../../Theme/theme-context';
 import { Image, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
-import { loginWithEmailAndPassword, resetPassword } from '../../helpers/firebaseAuth';
+// import { loginWithEmailAndPassword, resetPassword } from '../../helpers/firebaseAuth';
 import ErrorModal from '../../modals/ErrorModal';
 import InfoModal from '../../modals/InfoModal';
 import { strings } from '../../values/strings';
@@ -65,27 +65,27 @@ const Reset = (props) => {
 
         let email = data.email;
 
-        resetPassword(email)
-            .then((resp) => {
-                setInfoMessage(strings.resetPasswordEmailSent);
-                setInfoVisible(true);
-            })
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
+        // resetPassword(email)
+        //     .then((resp) => {
+        //         setInfoMessage(strings.resetPasswordEmailSent);
+        //         setInfoVisible(true);
+        //     })
+        //     .catch((error) => {
+        //         var errorCode = error.code;
+        //         var errorMessage = error.message;
 
-                if (errorCode === 'auth/invalid-email') {
-                    setErrorMessage(strings.invalidEmail);
-                    setErrorVisible(true);
-                } else if (errorCode === 'auth/user-not-found') {
-                    setErrorMessage(strings.userNotFound);
-                    setErrorVisible(true);
-                }
-                else {
-                    setErrorMessage(strings.somethingWentWrong+" "+errorMessage);
-                    setErrorVisible(true);
-                }
-            })
+        //         if (errorCode === 'auth/invalid-email') {
+        //             setErrorMessage(strings.invalidEmail);
+        //             setErrorVisible(true);
+        //         } else if (errorCode === 'auth/user-not-found') {
+        //             setErrorMessage(strings.userNotFound);
+        //             setErrorVisible(true);
+        //         }
+        //         else {
+        //             setErrorMessage(strings.somethingWentWrong+" "+errorMessage);
+        //             setErrorVisible(true);
+        //         }
+        //     })
     }
 
     return (
