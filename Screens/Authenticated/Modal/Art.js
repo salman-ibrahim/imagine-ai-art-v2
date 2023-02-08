@@ -81,6 +81,7 @@ const Art = ({ navigation, route }) => {
         }
     }, [artStatus])
 
+    
     /**
      * Call the fetch API to get the art status
      */
