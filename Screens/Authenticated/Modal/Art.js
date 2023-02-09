@@ -186,6 +186,7 @@ const Art = ({ navigation, route }) => {
                 {
                     loading ?
                     <>
+                        
                         <Button style={styles.button} onPress={handleCancel} status='danger' accessoryLeft={ CrossIcon }> Cancel </Button>
                         <Text style={styles.text}>Cancelling the art in progress may cost you.</Text>
                     </>

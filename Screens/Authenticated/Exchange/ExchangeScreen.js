@@ -8,8 +8,6 @@ const BackIcon = (props) => (
     <Icon {...props} name='arrow-back-outline' />
 );
 
-
-
 const ExchangeScreen = ({ navigation }) => {
 
     const styles = useStyleSheet(themedStyles);
