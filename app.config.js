@@ -24,6 +24,7 @@ export default () => ({
     },
     android: {
       package: "com.gamearina.imagine",
+      playStoreUrl: "https://play.google.com/store/apps/details?id=com.gamearina.imagine",
       versionCode: 1,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
