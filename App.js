@@ -7,10 +7,11 @@ import AppNavigator from "./Navigator/AppNavigator";
 import {ThemeContext} from "./Theme/theme-context";
 import { SafeAreaProvider, initialWindowMetrics, SafeAreaView } from 'react-native-safe-area-context';
 import { deleteData, getData, storeData } from './helpers/secureStore';
-import './config/firebaseConfig';
+// import './config/firebaseConfig';
 import { Provider } from 'react-redux';
 import store from './store';
 import Toast from 'react-native-toast-message';
+import { toastInfo, toastSuccess } from './helpers/toasts';
 
 if(__DEV__) {
     import('./config/reactotronConfig').then(() => console.log('Reactotron Configured'))

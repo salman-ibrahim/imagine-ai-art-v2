@@ -8,6 +8,7 @@ import CoinIcon from '../../assets/icons/CoinIcon'
 import { getData, storeData } from '../../helpers/secureStore'
 import store from '../../store'
 import { setUserWalletAction } from '../../store/actions/userActions'
+import { strings } from '../../values/strings'
 
 const ProfileInfoHeader = (props) => {
 
@@ -20,8 +21,8 @@ const ProfileInfoHeader = (props) => {
     getData('wallet')
     .then((wallet) => {
       if(wallet == undefined) {
-        storeData('wallet', '100')
-        store.dispatch(setUserWalletAction(100))
+        storeData('wallet', '3')
+        store.dispatch(setUserWalletAction(3))
       }
       else {
         const balance = parseInt(wallet, 10)
@@ -34,7 +35,7 @@ const ProfileInfoHeader = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
-        <Text style={styles.textWhite} category='h4'>Imagine - AI Art</Text>
+        <Text style={styles.textWhite} category='h4'>{strings.appTitle}</Text>
       </View>
 
       <View style={styles.balance} >

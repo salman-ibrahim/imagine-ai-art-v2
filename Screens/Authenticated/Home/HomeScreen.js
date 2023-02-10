@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Divider, Icon, Layout, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components';
 import { ThemeContext } from '../../../Theme/theme-context';
-import { logoutUser } from '../../../helpers/firebaseAuth';
+// import { logoutUser } from '../../../helpers/firebaseAuth';
 import { ScrollView, View } from 'react-native';
 import DailyCheckin from '../../../components/Home/DailyCheckin';
 import FeaturedItems from '../../../components/Home/FeaturedItems';
@@ -28,14 +28,14 @@ const HomeScreen = ({ navigation }) => {
     );
 
     const handleLogout = () => {
-        logoutUser()
-            .then(() => {
-                // navigation.navigate('Login');
-                console.log("LOGOUT SUCCESS");
-            })
-            .catch((error) => {
-                console.log("LOGOUT FAILED: ", error);
-            });
+        // logoutUser()
+        //     .then(() => {
+        //         // navigation.navigate('Login');
+        //         console.log("LOGOUT SUCCESS");
+        //     })
+        //     .catch((error) => {
+        //         console.log("LOGOUT FAILED: ", error);
+        //     });
     }
 
     return (

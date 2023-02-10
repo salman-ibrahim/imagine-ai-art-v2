@@ -1,6 +1,6 @@
 import { Button, Divider, Icon, Layout, StyleService, Text, Toggle, useStyleSheet } from '@ui-kitten/components';
 import React, { useEffect } from 'react'
-import { ScrollView, View } from 'react-native';
+import { Linking, ScrollView, TouchableOpacity, View } from 'react-native';
 import ExternalLinkIcon from '../../assets/icons/ExternalLinkIcon';
 import HeadphonesIcon from '../../assets/icons/HeadphonesIcon';
 import LogoutIcon from '../../assets/icons/LogoutIcon';
@@ -9,9 +9,11 @@ import ReceiptIcon from '../../assets/icons/ReceiptIcon';
 import StarIcon from '../../assets/icons/StarIcon';
 import ThemeIcon from '../../assets/icons/ThemeIcon';
 import WalletIcon from '../../assets/icons/WalletIcon';
-import { logoutUser } from '../../helpers/firebaseAuth';
+import { prepareSupportEmailBody, requestInAppReview } from '../../helpers/commonHelpers';
+// import { logoutUser } from '../../helpers/firebaseAuth';
 import { getData } from '../../helpers/secureStore';
 import { ThemeContext } from '../../Theme/theme-context';
+import { strings } from '../../values/strings';
 
 const ProfileOptions = () => {
 
@@ -45,84 +47,96 @@ const ProfileOptions = () => {
     }
 
     const handleLogout = () => {
-        logoutUser()
-            .then(() => {
-                console.log("LOGOUT SUCCESS");
-            })
-            .catch((error) => {
-                console.log("LOGOUT FAILED: ", error);
-            });
+        // logoutUser()
+        //     .then(() => {
+        //         console.log("LOGOUT SUCCESS");
+        //     })
+        //     .catch((error) => {
+        //         console.log("LOGOUT FAILED: ", error);
+        //     });
     }
 
     return (
         <ScrollView style={styles.container}>
             {/* Transactions */}
-            <View style={styles.menuItem}>
-                <View style={styles.menuTitle}>
-                    <WalletIcon/>
-                    <Text category='h6' style={{marginLeft:20}}>Transactions</Text>
+            {/* <TouchableOpacity>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <WalletIcon/>
+                        <Text category='h6' style={{marginLeft:20}}>Transactions</Text>
+                    </View>
+                    <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
                 </View>
-                <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
-            </View>
+            </TouchableOpacity>
+            <Divider/> */}
+
+            {/* Rate Us */}
+            <TouchableOpacity onPress={() => requestInAppReview()}>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <StarIcon/>
+                        <Text category='h6' style={{marginLeft:20}}>Rate us on Playstore</Text>
+                    </View>
+                    <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
+                </View>
+            </TouchableOpacity>
             <Divider/>
 
             {/* Terms */}
-            <View style={styles.menuItem}>
-                <View style={styles.menuTitle}>
-                    <ReceiptIcon/>
-                    <Text category='h6' style={{marginLeft:20}}>Terms of Service</Text>
+            <TouchableOpacity onPress={() => Linking.openURL("https://rewardy.gamearina.com/play-store-terms-conditions.php")}>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <ReceiptIcon/>
+                        <Text category='h6' style={{marginLeft:20}}>Terms of Service</Text>
+                    </View>
+                    <ExternalLinkIcon height={20} width={20}/>
                 </View>
-                <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
-            </View>
+            </TouchableOpacity>
             <Divider/>
 
             {/* Privacy Policy */}
+            <TouchableOpacity onPress={() => Linking.openURL("https://rewardy.gamearina.com/play-store-privacy-policy.php")}>
             <View style={styles.menuItem}>
                 <View style={styles.menuTitle}>
                     <PrivacyPolicyIcon/>
                     <Text category='h6' style={{marginLeft:20}}>Privacy Policy</Text>
                 </View>
-                <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
-            </View>
-            <Divider/>
-
-            {/* Rate Us */}
-            <View style={styles.menuItem}>
-                <View style={styles.menuTitle}>
-                    <StarIcon/>
-                    <Text category='h6' style={{marginLeft:20}}>Rate us on Playstore</Text>
-                </View>
                 <ExternalLinkIcon height={20} width={20}/>
             </View>
+            </TouchableOpacity>
             <Divider/>
 
             {/* Contact Us */}
-            <View style={styles.menuItem}>
-                <View style={styles.menuTitle}>
-                    <HeadphonesIcon/>
-                    <Text category='h6' style={{marginLeft:20}}>Contact Us</Text>
+            <TouchableOpacity onPress={() => Linking.openURL(`mailto:${strings.supportEmail}?subject=${strings.supportSubject}`) }>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <HeadphonesIcon/>
+                        <Text category='h6' style={{marginLeft:20}}>Contact Us</Text>
+                    </View>
+                    <ExternalLinkIcon height={20} width={20}/>
                 </View>
-                <ExternalLinkIcon height={20} width={20}/>
-            </View>
+            </TouchableOpacity>
             <Divider/>
 
             {/* Dark Mode */}
-            <View style={styles.menuItem}>
-                <View style={styles.menuTitle}>
-                    <ThemeIcon style={styles.tintColor}/>
-                    <Text category='h6' style={{marginLeft:20}} onPress={toggleTheme}>Dark Mode</Text>
+            <TouchableOpacity>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <ThemeIcon style={styles.tintColor}/>
+                        <Text category='h6' style={{marginLeft:20}} onPress={toggleTheme}>Dark Mode</Text>
+                    </View>
+                    <Toggle checked={darkMode} disabled={loading} status='basic' onChange={toggleTheme} checkedIcon={checkIcon}/>
                 </View>
-                <Toggle checked={darkMode} disabled={loading} status='basic' onChange={toggleTheme} checkedIcon={checkIcon}/>
-            </View>
+            </TouchableOpacity>
             <Divider/>
 
             {/* Logout */}
-            <View style={styles.menuItem}>
+            {/* <View style={styles.menuItem}>
                 <View style={styles.menuTitle}>
                     <LogoutIcon/>
                     <Text category='h6' style={{marginLeft:20}} onPress={handleLogout}>Logout</Text>
                 </View>
-            </View>
+            </View> */}
             <Divider/>
         </ScrollView>
     )

@@ -1,5 +1,5 @@
-import { auth } from "../config/firebaseConfig";
-import { createUserWithEmailAndPassword, getIdToken, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+// import { auth } from "../config/firebaseConfig";
+// import { createUserWithEmailAndPassword, getIdToken, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { storeData } from "./secureStore";
 import { setAuthenticationStatusAction } from "../store/actions/userActions";
 import store from "../store";
@@ -14,21 +14,21 @@ import { ENCODE_STATUS } from "./secureStoreStatuses";
  */
 export const registerWithEmailAndPassword = (email, password, name, dob) => {
 
-    return createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in
-            // var user = userCredential.user;
-            // Send verification email
-            sendSignupVerificationEmail();
-            // Update user profile
-            updateUserProfile(name, null);
-            console.log('SUCCESS');
-            return Promise.resolve(userCredential);
-        })
-        .catch((error) => {
-            console.log('ERROR');
-            return Promise.reject(error);
-        });
+    // return createUserWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //         // Signed in
+    //         // var user = userCredential.user;
+    //         // Send verification email
+    //         sendSignupVerificationEmail();
+    //         // Update user profile
+    //         updateUserProfile(name, null);
+    //         console.log('SUCCESS');
+    //         return Promise.resolve(userCredential);
+    //     })
+    //     .catch((error) => {
+    //         console.log('ERROR');
+    //         return Promise.reject(error);
+    //     });
 }
 
 
