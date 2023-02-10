@@ -9,7 +9,7 @@ export default () => ({
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff"
+      backgroundColor: "#222B45"
     },
     updates: {
       fallbackToCacheTimeout: 0
@@ -28,7 +28,7 @@ export default () => ({
       versionCode: 6,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#222B45"
       }
     },
     web: {
