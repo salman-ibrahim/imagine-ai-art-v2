@@ -13,7 +13,7 @@
       }
     },
     "staging" : {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal",
       "channel" : "staging",
       "env": {
