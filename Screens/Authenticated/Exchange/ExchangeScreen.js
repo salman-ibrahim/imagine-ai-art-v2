@@ -24,6 +24,9 @@ const ExchangeScreen = ({ navigation }) => {
         <Layout style={styles.container}>
         <View style={styles.scrollBody}>
             <StoreList />
+            <View style={styles.upcomingContainer}>
+                <Text>More Coming Soon...</Text>
+            </View>
         </View>
     </Layout>
     );
@@ -47,4 +50,9 @@ const themedStyles = StyleService.create({
     button: {
         marginVertical: 4,
     },
+    upcomingContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    }
   });

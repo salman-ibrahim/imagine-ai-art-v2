@@ -1,6 +1,6 @@
 import { SAVE_GENERATED_ART, SAVE_GENERATED_ART_IDS, SET_REWARD_CLAIM_AVAILABILITY } from "../constants/constants";
 
-export const xsaveGeneratedArtAction = (payload) => ({
+export const saveGeneratedArtAction = (payload) => ({
     type: SAVE_GENERATED_ART,
     payload: [...payload]
 });

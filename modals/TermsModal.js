@@ -2,6 +2,8 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, CheckBox, Modal, Text } from '@ui-kitten/components';
 import TermsOfService from '../components/subcomponents/TermsOfService';
+import RenderHtml from 'react-native-render-html';
+import { terms } from '../values/terms';
 
 const TermsModal = (props) => {
     const { agreement, handleAgreement } = props;
@@ -13,6 +15,10 @@ const TermsModal = (props) => {
         setAgreed(agreed);
         handleAgreement(agreed);
     }
+
+    const source = {
+        html: terms
+      };
 
     return (
         <View style={styles.container}>
@@ -36,10 +42,14 @@ const TermsModal = (props) => {
                 <View>
                     <Card disabled={true} style={styles.body}>
                         <ScrollView style={styles.content}>
-                            <Text category='h6'>Terms and Conditions</Text>
-                            <Text>
+                            <RenderHtml
+                                contentWidth={"100%"}
+                                source={source}
+                            />
+                            {/* <Text category='h6'>Terms and Conditions</Text> */}
+                            {/* <Text> */}
                                 {/* Data From API */}
-                            </Text>
+                            {/* </Text> */}
                             {/* <TermsOfService/> */}
                         </ScrollView>
                         <Button onPress={() => setVisible(false)}>Okay</Button>

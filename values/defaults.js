@@ -1,6 +1,6 @@
 export const defaults = {
     // Art
-    artCost: 10,
+    artCost: 2,
 
     // Ads
     rewsardedAdUnitId: 'ca-app-pub-2313151984818754/5805464636',
