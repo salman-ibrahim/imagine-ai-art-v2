@@ -8,16 +8,16 @@
       "distribution": "internal",
       "channel": "dev",
       "env": {
-        "API_BASE_URL": "stage-api.task-app.com",
+        "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
       }
     },
     "staging" : {
-      "developmentClient": true,
+      "developmentClient": false,
       "distribution": "internal",
       "channel" : "staging",
       "env": {
-        "API_BASE_URL": "stage-api.task-app.com",
+        "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
       }
     },
@@ -26,7 +26,7 @@
     },
     "production": {
       "env": {
-        "API_BASE_URL": "stage-api.task-app.com",
+        "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com"
       }
     }
