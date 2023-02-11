@@ -21,7 +21,7 @@ const renderVideoIcon = (props) => (
     <Icon {...props} name='video-outline' />
 )
 
-const StoreRewardItem = ({item, rewardClaimAvailable}) => {
+const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
 
     const styles = useStyleSheet(themedStyles);
 
@@ -30,7 +30,7 @@ const StoreRewardItem = ({item, rewardClaimAvailable}) => {
 
     // Effect for Rewarded Video Ad
     useEffect(() => {
-        if(item.cost == 'ad') {
+        if(item.cost == 'ad' && adsReadyToLoad) {
             const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
                 console.log('Rewarded advert loaded');
                 setLoaded(true);
@@ -52,7 +52,7 @@ const StoreRewardItem = ({item, rewardClaimAvailable}) => {
                 unsubscribeEarned();
             };
         }
-    }, [item.cost]);
+    }, [item.cost, adsReadyToLoad]);
 
     // Effect for daily free reward
     useEffect(() => {
@@ -148,7 +148,7 @@ const StoreRewardItem = ({item, rewardClaimAvailable}) => {
     )
 }
 
-const mapStateToProps = (state) => ({ rewardClaimAvailable: state.userReducer.rewardClaimAvailable })
+const mapStateToProps = (state) => ({ rewardClaimAvailable: state.userReducer.rewardClaimAvailable, adsReadyToLoad: state.interfaceReducer.adsReadyToLoad })
 export default connect(mapStateToProps, null) (StoreRewardItem)
 
 const themedStyles = StyleService.create({
