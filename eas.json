@@ -24,7 +24,14 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "android":{
+        "buildType": "apk"
+      },
+      "env": {
+        "API_BASE_URL": "imagine-api.gamearina.com",
+        "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com",
+        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId"
+      }
     },
     "production": {
       "env": {
