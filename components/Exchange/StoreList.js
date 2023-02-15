@@ -16,10 +16,10 @@ const StoreList = (props) => {
         setStoreItems([...freeStoreItems, ...paidItems])
     },[paidItems.length])
     return (
-        <Layout>
+        <>
         <List 
             data={storeItems}
-            renderItem={({ item }) => {
+            renderItem={({ item, index}) => {
                 return (
                     item.type === 'reward' ? 
                     (
@@ -27,7 +27,7 @@ const StoreList = (props) => {
                     )
                     :
                     (
-                        <StoreItem item={item} key={item.id} />
+                        <StoreItem item={item} key={item.id} lastItem={storeItems.length == (index+1)} />
                     )
                 )
             }}
@@ -44,13 +44,16 @@ const StoreList = (props) => {
                     )}
                 />
             }
-        </Layout>
+        </>
     )
 }
 
 export default StoreList
 
 const themedStyles = StyleService.create({
+    container: {
+        flex: 1,
+    },
     spinnerContainer: {
         // flex: 1,
         justifyContent: 'center',

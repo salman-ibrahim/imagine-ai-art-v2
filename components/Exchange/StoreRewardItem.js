@@ -155,7 +155,7 @@ const themedStyles = StyleService.create({
     item: {
         backgroundColor: 'background-basic-color-1',
         borderRadius: 16,
-        marginVertical: 4,
+        marginBottom: 8,
         paddingHorizontal: 16,
         overflow:'hidden'
     },
