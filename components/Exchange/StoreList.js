@@ -1,13 +1,20 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { Layout, List, StyleService, useStyleSheet } from '@ui-kitten/components'
+import { Layout, List, Spinner, StyleService, useStyleSheet } from '@ui-kitten/components'
 import StoreRewardItem from './StoreRewardItem';
 import StoreItem from './StoreItem';
+import { useEffect } from 'react';
 
-const StoreList = () => {
+const StoreList = (props) => {
+
+    const { paidItems, paidItemsLoading } = props
 
     const styles = useStyleSheet(themedStyles);
+    const [storeItems, setStoreItems ] = React.useState(freeStoreItems);
 
+    useEffect(() => {
+        setStoreItems([...freeStoreItems, ...paidItems])
+    },[paidItems.length])
     return (
         <Layout>
         <List 
@@ -16,15 +23,27 @@ const StoreList = () => {
                 return (
                     item.type === 'reward' ? 
                     (
-                        <StoreRewardItem item={item} />
+                        <StoreRewardItem item={item} key={item.id} />
                     )
                     :
                     (
-                        <StoreItem item={item} />
+                        <StoreItem item={item} key={item.id} />
                     )
                 )
             }}
-        />
+
+            />
+            {
+                paidItemsLoading &&
+                <List 
+                    data={[1]}
+                    renderItem={() => (
+                        <View style={styles.spinnerContainer}>
+                            <Spinner />
+                        </View>
+                    )}
+                />
+            }
         </Layout>
     )
 }
@@ -32,10 +51,19 @@ const StoreList = () => {
 export default StoreList
 
 const themedStyles = StyleService.create({
-
+    spinnerContainer: {
+        // flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        borderRadius:25
+    },
+    spinner: {
+        alignSelf: 'center',
+    }
 })
 
-const storeItems = [
+const freeStoreItems = [
     {
         id: 1,
         title: "Daily Bonus",

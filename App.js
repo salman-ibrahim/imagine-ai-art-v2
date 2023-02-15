@@ -11,7 +11,9 @@ import { deleteData, getData, storeData } from './helpers/secureStore';
 import { Provider } from 'react-redux';
 import store from './store';
 import Toast from 'react-native-toast-message';
-import { toastInfo, toastSuccess } from './helpers/toasts';
+import { useEffect } from 'react';
+import Purchases from 'react-native-purchases';
+import Constants from 'expo-constants';
 
 if(__DEV__) {
     import('./config/reactotronConfig').then(() => console.log('Reactotron Configured'))
@@ -20,6 +22,10 @@ if(__DEV__) {
 export default (props) => {
     
     const [theme, setTheme] = React.useState('light');
+
+    useEffect(() => {
+        Purchases.configure({apiKey: Constants.expoConfig.extra.PUBLIC_GOOGLE_SDK_KEY});
+    }, [])
 
     getData('appTheme').then((data) => {
         if (data) {

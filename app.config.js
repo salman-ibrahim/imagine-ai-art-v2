@@ -2,7 +2,7 @@ export default () => ({
   expo: {
     name: "Imagine - AI Art",
     slug: "imagine-ai-art",
-    version: "2.0.1",
+    version: "2.0.2",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -25,7 +25,7 @@ export default () => ({
     android: {
       package: "com.gamearina.imagine",
       playStoreUrl: "https://play.google.com/store/apps/details?id=com.gamearina.imagine",
-      versionCode: 7,
+      versionCode: 8,
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#222B45"
@@ -40,6 +40,7 @@ export default () => ({
       },
       API_BASE_URL: process.env.API_BASE_URL,
       PREDICTION_MODEL_STABLE_DIFFUSION_URL: process.env.PREDICTION_MODEL_STABLE_DIFFUSION_URL,
+      PUBLIC_GOOGLE_SDK_KEY: process.env.PUBLIC_GOOGLE_SDK_KEY,
     }
   }
 })

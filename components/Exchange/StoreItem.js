@@ -2,17 +2,28 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Button, ListItem, StyleService, useStyleSheet } from '@ui-kitten/components'
 import { completePurchase } from '../../helpers/walletHelpers';
+import { purchaseBrushes } from '../../helpers/IAPHelper';
+import { toastError } from '../../helpers/toasts';
 
 const StoreItem = ({item}) => {
 
     const styles = useStyleSheet(themedStyles);
-
+    
     const renderActionButton = () => (
-        <Button style={styles.button} onPress={claimReward}>{item.cost}$</Button>
+        <Button style={styles.button} onPress={makePurchase}>{item.cost}</Button>
     )
 
-    const claimReward = () => {
-        completePurchase(item.value)
+    const makePurchase = () => {
+        const identifier = item.package.product.identifier;
+        purchaseBrushes(item.package)
+            .then((purchase) => {
+                if(purchase == identifier) {
+                    completePurchase(item.value)
+                }
+                else {
+                    toastError("Purchase failed.")
+                }
+            })
     }
 
     return (
