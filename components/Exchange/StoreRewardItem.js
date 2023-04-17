@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Button, Icon, ListItem, StyleService, useStyleSheet } from '@ui-kitten/components'
+import { Button, Icon, ListItem, Spinner, StyleService, useStyleSheet } from '@ui-kitten/components'
 import { completePurchase } from '../../helpers/walletHelpers';
-import {RewardedAd, RewardedAdEventType, TestIds} from 'react-native-google-mobile-ads';
+import {RewardedAd, RewardedAdEventType, TestIds, useRewardedAd} from 'react-native-google-mobile-ads';
 import { defaults } from '../../values/defaults';
 import { toastInfo } from '../../helpers/toasts';
 import { getData, storeData } from '../../helpers/secureStore';
@@ -12,10 +12,11 @@ import { setRewardClaimAvailabilityAction } from '../../store/actions/artActions
 import { connect } from 'react-redux';
 import store from '../../store';
 import TimerCountdown from 'react-native-timer-countdown';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
-const rewarded = RewardedAd.createForAdRequest(defaults.rewsardedAdUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-});
+// const rewarded = RewardedAd.createForAdRequest(defaults.rewardedAdUnitId, {
+//     requestNonPersonalizedAdsOnly: true,
+// });
 
 const renderVideoIcon = (props) => (
     <Icon {...props} name='video-outline' />
@@ -25,34 +26,77 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
 
     const styles = useStyleSheet(themedStyles);
 
-    const [loaded, setLoaded] = React.useState(false);
+    // const [loaded, setLoaded] = React.useState(false);
     const [timeUntillNextClaim, setTimeUntillNextClaim] = React.useState(undefined);
 
-    // Effect for Rewarded Video Ad
+    const focused = useIsFocused();
+
+    const { isLoaded, isClosed, isEarnedReward , load, show, reward } = useRewardedAd(defaults.rewardedAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
+    // useEffect(() => {
+    //     if(item.cost == 'ad' && !isLoaded && focused) {
+    //         console.log(focused);
+    //         console.log('Loading');
+    //         load();
+    //     }
+    // }, [focused])
+
     useEffect(() => {
-        if(item.cost == 'ad' && adsReadyToLoad) {
-            const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-                console.log('Rewarded advert loaded');
-                setLoaded(true);
-            });
-            const unsubscribeEarned = rewarded.addAdEventListener(
-                RewardedAdEventType.EARNED_REWARD,
-                reward => {
-                    console.log('User earned reward of ', reward.amount);
-                    claimReward(reward.amount)
-                },
-            );
-
-            // Start loading the rewarded ad straight away
-            rewarded.load();
-
-            // Unsubscribe from events on unmount
-            return () => {
-                unsubscribeLoaded();
-                unsubscribeEarned();
-            };
+        // Start Loading Right 
+        if(item.cost == 'ad' && adsReadyToLoad){
+            load()
         }
-    }, [item.cost, adsReadyToLoad]);
+    },[load, adsReadyToLoad])
+
+    useEffect(() => {
+        if(isClosed) {
+            // Perform action if the advert is closed
+            load()
+        }
+    }, [isClosed])
+
+    useEffect(() => {
+        if(isEarnedReward){
+            // Perform action intended for rewarded ad completion
+            console.log('User earned reward of ', reward.amount);
+            claimReward(reward.amount)
+        }
+    },[isEarnedReward])
+
+    useEffect(() => {
+        if(isLoaded){
+            console.log("Rewarded Advert Loaded for free brush");
+        }
+    }, [isLoaded])
+
+    // Effect for Rewarded Video Ad
+    // useEffect(() => {
+        
+    //     if(item.cost == 'ad' && adsReadyToLoad) {
+    //         const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    //             console.log('Rewarded advert loaded');
+    //             setLoaded(true);
+    //         });
+    //         const unsubscribeEarned = rewarded.addAdEventListener(
+    //             RewardedAdEventType.EARNED_REWARD,
+    //             reward => {
+    //                 console.log('User earned reward of ', reward.amount);
+    //                 claimReward(reward.amount)
+    //             },
+    //         );
+
+    //         // Start loading the rewarded ad straight away
+    //         rewarded.load();
+
+    //         // Unsubscribe from events on unmount
+    //         return () => {
+    //             unsubscribeLoaded();
+    //             unsubscribeEarned();
+    //         };
+    //     }
+    // }, [item.cost, adsReadyToLoad]);
 
     // Effect for daily free reward
     useEffect(() => {
@@ -92,15 +136,15 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
                 }
             </Button>
         :
-        <Button style={styles.button} disabled={!loaded} onPress={showRewardedAd} accessoryRight={renderVideoIcon}></Button>
+        <Button style={styles.button} disabled={!isLoaded} onPress={showRewardedAd} accessoryRight={isLoaded ? renderVideoIcon : <ActivityIndicator/>}></Button>
     )
 
     const claimReward = (amount) => {
         if(item.cost == 'ad') {
-            setLoaded(false)
+            // setLoaded(false)
             completePurchase(amount)
             setTimeout(() => {
-                rewarded.load();
+                load();
             }, 3000);
         }
         else {
@@ -130,10 +174,11 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
     }
 
     const showRewardedAd = () => {
-        if(loaded){
-            rewarded.show();
+        if(isLoaded){
+            show();
         }
         else {
+            load();
             toastInfo('Ad is not loaded yet.', 'Please Wait')
         }
     }
@@ -163,5 +208,8 @@ const themedStyles = StyleService.create({
         borderRadius:10,
         minWidth:'25%',
         maxWidth:'40%'
+    },
+    spinnerButton: {
+        borderRadius:10,
     }
 })

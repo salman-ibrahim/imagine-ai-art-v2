@@ -5,6 +5,7 @@ import { getData, storeData } from "./secureStore"
 import * as StoreReview from 'expo-store-review';
 import * as Device from 'expo-device';
 import { strings } from "../values/strings";
+import { Linking, Share } from "react-native";
 
 export const markUserOnboarded = () => {
     storeData('onboarded', 'TRUE')
@@ -114,4 +115,14 @@ export const prepareSupportEmailBody = () => {
 
   bodyText = bodyText.replace("{{device}}", device).replace("{{model}}", model).replace("{{version}}", version)
   return bodyText
+}
+
+export const shareApp = async () => {
+  try {
+    const shareText = strings.shareAppMessage.replace('{{packageName}}', strings.packageName)
+    await Share.share({message: shareText})
+  }
+  catch (error) {
+    console.log(error);
+  }
 }

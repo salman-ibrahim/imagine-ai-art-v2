@@ -3,6 +3,7 @@ import {BottomNavigation, BottomNavigationTab, Divider, Icon} from '@ui-kitten/c
 import { toastInfo } from '../helpers/toasts';
 import store from '../store';
 import { setProfileHeaderVisible } from '../store/actions/interfaceActions';
+import { View } from 'react-native';
 
 const HomeIcon = (props) => (
     <Icon {...props} name='home'/>
@@ -61,20 +62,19 @@ const AppBottomNavigation = (props) => {
     return (
         navigatorVisible 
         ?
-        <>
-        <Divider/>
-        <BottomNavigation
-            selectedIndex={state.index}
-            
-            onSelect={index => navigation.navigate(state.routeNames[index])}
-        >
-            <BottomNavigationTab title='HOME' icon={homeIcon}/>
-            {/* <BottomNavigationTab title='ACTIVITY' icon={activityIcon}/> */}
-            <BottomNavigationTab title='STORE' icon={exchangeIcon}/>
-            {/* <BottomNavigationTab title='INVITE' icon={inviteIcon}/> */}
-            <BottomNavigationTab title='SETTINGS' icon={gearIcon} />
-        </BottomNavigation>
-        </>
+        <View>
+            <Divider/>
+            <BottomNavigation
+                selectedIndex={state.index}
+                onSelect={index => navigation.navigate(state.routeNames[index])}
+            >
+                <BottomNavigationTab title='HOME' icon={homeIcon}/>
+                {/* <BottomNavigationTab title='ACTIVITY' icon={activityIcon}/> */}
+                <BottomNavigationTab title='STORE' icon={exchangeIcon}/>
+                {/* <BottomNavigationTab title='INVITE' icon={inviteIcon}/> */}
+                <BottomNavigationTab title='SETTINGS' icon={gearIcon} />
+            </BottomNavigation>
+        </View>
         :
         null
     );

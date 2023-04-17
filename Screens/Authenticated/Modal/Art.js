@@ -8,7 +8,7 @@ import artService from '../../../services/ArtService'
 import { convertImageToBase64 } from '../../../helpers/imageHelpers'
 import Base64Image from '../../../components/subcomponents/Base64Image'
 import { refundArtworkPriceToWallet } from '../../../helpers/walletHelpers'
-import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads'
+import { BannerAd, BannerAdSize, useInterstitialAd } from 'react-native-google-mobile-ads'
 import { defaults } from '../../../values/defaults'
 
 const BackIcon = (props) => (
@@ -27,7 +27,23 @@ const CrossIcon = (props) => (
  */
 const Art = ({ navigation, route }) => {
 
-    const { id, query, image, source, status } = route.params
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(defaults.interstitialAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
+    useEffect(() => {
+        // Start loading the interstitial straight away
+        load();
+    }, [load]);
+
+    useEffect(() => {
+        if (isClosed) {
+            // Action after the ad is closed
+            navigateBack();
+        }
+    }, [isClosed, navigation]);
+
+    const { id, query, image, source, status, isExplicit } = route.params
 
     const styles = useStyleSheet(themedStyles);
     
@@ -113,7 +129,9 @@ const Art = ({ navigation, route }) => {
             }).catch((err) => {
                 toastError('Something went wrong, please try again later');
                 setArtStatus('failed')
-                refundArtworkPriceToWallet()
+                if(!isExplicit){
+                    refundArtworkPriceToWallet()
+                }
                 navigateBack()
             })
     }
@@ -157,7 +175,7 @@ const Art = ({ navigation, route }) => {
      * @returns Back button
      */
     const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
+        <TopNavigationAction icon={BackIcon} onPress={isLoaded ? show : navigateBack}/>
     )
         
     /**
