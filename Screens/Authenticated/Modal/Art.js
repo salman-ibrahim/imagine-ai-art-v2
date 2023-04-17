@@ -8,6 +8,8 @@ import artService from '../../../services/ArtService'
 import { convertImageToBase64 } from '../../../helpers/imageHelpers'
 import Base64Image from '../../../components/subcomponents/Base64Image'
 import { refundArtworkPriceToWallet } from '../../../helpers/walletHelpers'
+import { BannerAd, BannerAdSize, useInterstitialAd } from 'react-native-google-mobile-ads'
+import { defaults } from '../../../values/defaults'
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
@@ -25,7 +27,23 @@ const CrossIcon = (props) => (
  */
 const Art = ({ navigation, route }) => {
 
-    const { id, query, image, source, status } = route.params
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(defaults.interstitialAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
+    useEffect(() => {
+        // Start loading the interstitial straight away
+        load();
+    }, [load]);
+
+    useEffect(() => {
+        if (isClosed) {
+            // Action after the ad is closed
+            navigateBack();
+        }
+    }, [isClosed, navigation]);
+
+    const { id, query, image, source, status, isExplicit } = route.params
 
     const styles = useStyleSheet(themedStyles);
     
@@ -40,9 +58,8 @@ const Art = ({ navigation, route }) => {
      */
     useFocusEffect(
         React.useCallback(() => {
-            
             iniStates()
-            
+
             if(status == 'starting' || status == 'processing') {
                 setLoading(true)
                 setArtStatus(status)
@@ -112,7 +129,9 @@ const Art = ({ navigation, route }) => {
             }).catch((err) => {
                 toastError('Something went wrong, please try again later');
                 setArtStatus('failed')
-                refundArtworkPriceToWallet()
+                if(!isExplicit){
+                    refundArtworkPriceToWallet()
+                }
                 navigateBack()
             })
     }
@@ -156,7 +175,7 @@ const Art = ({ navigation, route }) => {
      * @returns Back button
      */
     const BackAction = () => (
-        <TopNavigationAction icon={BackIcon} onPress={navigateBack}/>
+        <TopNavigationAction icon={BackIcon} onPress={isLoaded ? show : navigateBack}/>
     )
         
     /**
@@ -186,8 +205,11 @@ const Art = ({ navigation, route }) => {
                 {
                     loading ?
                     <>
-                        <Button style={styles.button} onPress={handleCancel} status='danger' accessoryLeft={ CrossIcon }> Cancel </Button>
-                        <Text style={styles.text}>Cancelling the art in progress may cost you.</Text>
+                        <View style={styles.bannerContainer}>
+                            <BannerAd unitId={defaults.bannerAdUnitId} size={BannerAdSize.BANNER} />
+                        </View>
+                        {/* <Button style={styles.button} onPress={handleCancel} status='danger' accessoryLeft={ CrossIcon }> Cancel </Button>
+                        <Text style={styles.text}>Cancelling the art in progress may cost you.</Text> */}
                     </>
                     :
                     <ArtActions art={art} />
@@ -207,6 +229,10 @@ const themedStyles = StyleService.create({
         borderTopRightRadius:25,
         borderTopLeftRadius:25
     },
+    bannerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },  
     artContainer: {
         flex: 1,
         justifyContent: 'center',

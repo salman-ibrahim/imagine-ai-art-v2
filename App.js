@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import React from 'react';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry, Text} from '@ui-kitten/components';
@@ -7,10 +7,13 @@ import AppNavigator from "./Navigator/AppNavigator";
 import {ThemeContext} from "./Theme/theme-context";
 import { SafeAreaProvider, initialWindowMetrics, SafeAreaView } from 'react-native-safe-area-context';
 import { deleteData, getData, storeData } from './helpers/secureStore';
-import './config/firebaseConfig';
+// import './config/firebaseConfig';
 import { Provider } from 'react-redux';
 import store from './store';
 import Toast from 'react-native-toast-message';
+import { useEffect } from 'react';
+import Purchases from 'react-native-purchases';
+import Constants from 'expo-constants';
 
 if(__DEV__) {
     import('./config/reactotronConfig').then(() => console.log('Reactotron Configured'))
@@ -19,6 +22,10 @@ if(__DEV__) {
 export default (props) => {
     
     const [theme, setTheme] = React.useState('light');
+
+    useEffect(() => {
+        Purchases.configure({apiKey: Constants.expoConfig.extra.PUBLIC_GOOGLE_SDK_KEY});
+    }, [])
 
     getData('appTheme').then((data) => {
         if (data) {
@@ -33,6 +40,7 @@ export default (props) => {
     };
 
     return (
+        <View style={{ flex: 1 }}>
         <Provider store={store}>
             <IconRegistry icons={EvaIconsPack}/>
             <ThemeContext.Provider value={{ theme, toggleTheme }}>   
@@ -45,5 +53,6 @@ export default (props) => {
             </ThemeContext.Provider>
             <Toast />
         </Provider>
+        </View>
     )
 };

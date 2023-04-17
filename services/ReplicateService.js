@@ -1,7 +1,8 @@
 import axios from 'axios';
-import getEnvVars from '../environment';
+// import getEnvVars from '../environment';
+import Constants from 'expo-constants';
 
-const {PREDICTION_MODEL_STABLE_DIFFUSION_URL} = getEnvVars();
+// const {PREDICTION_MODEL_STABLE_DIFFUSION_URL} = getEnvVars();
 
 class ReplicateService {
   constructor(options = {}) {
@@ -46,9 +47,9 @@ class ReplicateService {
 }
 
 const options = {
-  baseURL: PREDICTION_MODEL_STABLE_DIFFUSION_URL
+  baseURL: Constants.expoConfig.extra.PREDICTION_MODEL_STABLE_DIFFUSION_URL,
 };
-console.log("replicate url is ", PREDICTION_MODEL_STABLE_DIFFUSION_URL)
+console.log("replicate url is ", options.baseURL)
 const replicateService = new ReplicateService(options);
 
 export default replicateService;

@@ -1,5 +1,6 @@
 import store from "../store"
 import { setUserWalletAction } from "../store/actions/userActions"
+import { defaults } from "../values/defaults"
 import { storeData } from "./secureStore"
 
 export const deductArtworkPriceFromWallet = () => {

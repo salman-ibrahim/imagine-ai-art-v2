@@ -1,7 +1,7 @@
 import { Button, Divider, Icon, Text } from '@ui-kitten/components'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { registerWithGoogle } from '../helpers/firebaseAuth';
+// import { registerWithGoogle } from '../helpers/firebaseAuth';
 
 const SocialAuth = (props) => {
     const { actionType } = props;

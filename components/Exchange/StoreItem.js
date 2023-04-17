@@ -1,27 +1,49 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
-import { Button, ListItem, StyleService, useStyleSheet } from '@ui-kitten/components'
+import { Button, Icon, ListItem, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import { completePurchase } from '../../helpers/walletHelpers';
+import { purchaseBrushes } from '../../helpers/IAPHelper';
+import { toastError } from '../../helpers/toasts';
 
-const StoreItem = ({item}) => {
+const StoreItem = ({item, lastItem}) => {
 
     const styles = useStyleSheet(themedStyles);
-
+    
     const renderActionButton = () => (
-        <Button style={styles.button} onPress={claimReward}>{item.cost}$</Button>
+        <Button style={styles.button} onPress={makePurchase}>{item.cost}</Button>
     )
 
-    const claimReward = () => {
-        completePurchase(item.value)
+    const makePurchase = () => {
+        const identifier = item.package.product.identifier;
+        purchaseBrushes(item.package)
+            .then((purchase) => {
+                if(purchase == identifier) {
+                    completePurchase(item.value)
+                }
+                else {
+                    toastError("Purchase failed.")
+                }
+            })
     }
 
     return (
-        <ListItem
-            style={styles.item}
-            title={item.title}
-            description={item.description}
-            accessoryRight={renderActionButton}
-        />
+            lastItem ? 
+            <View style={styles.badge}>
+                <Text>BEST VALUE</Text>
+                <ListItem
+                    style={styles.lastItem}
+                    title={item.title}
+                    description={item.description}
+                    accessoryRight={renderActionButton}
+                />
+            </View>
+            :
+            <ListItem
+                style={styles.item}
+                title={item.title}
+                description={item.description}
+                accessoryRight={renderActionButton}
+            />
     )
 }
 
@@ -31,9 +53,24 @@ const themedStyles = StyleService.create({
     item: {
         backgroundColor: 'background-basic-color-1',
         borderRadius: 16,
-        marginVertical: 4,
+        marginBottom: 8,
         paddingHorizontal: 12,
-        overflow:'hidden'
+        overflow:'hidden',
+    },
+    lastItem: {
+        backgroundColor: 'background-basic-color-1',
+        borderRadius: 16,
+        paddingHorizontal: 12,
+        overflow:'hidden',
+        borderWidth: 1,
+        borderColor: 'color-warning-600',
+        marginTop: 2,
+    },
+    badge: {
+        backgroundColor: 'color-warning-600',
+        borderRadius: 16,
+        alignItems:'center',
+        paddingTop: 2,
     },
     button: {
         borderRadius:10,

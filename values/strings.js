@@ -1,6 +1,7 @@
 export const strings = {
     // App
-    appTitle: 'React Native Firebase Starter',
+    appTitle: 'Imagine - AI Art',
+    packageName: 'com.gamearina.imagine',
 
     // Auth Login
     accountNotVerified: 'Account not verified, Please verify your account by clicking the link in email sent to your email address.',
@@ -25,6 +26,10 @@ export const strings = {
     somethingWentWrong: 'Something went wrong, please try again',
 
     // Share message
-    shareMessage: 'I generated this "{image}" using "IMAGINE - AI ART" app. This app converts imaginations into art. Download the app now to generate your own art. https://play.google.com/store/apps/details?id=com.gamearina.imagine',
-
+    shareMessage: 'I generated this "{image}" using "IMAGINE - AI ART" app. This app converts imaginations into art. Download the app now to generate your own art. https://play.google.com/store/apps/details?id={packageName}',
+    shareAppMessage: 'This app is awesome, it can convert imaginations into art, download now and turn your imaginations into art. https://play.google.com/store/apps/details?id={{packageName}}',
+    // Support
+    supportEmail: "support@gamearina.com",
+    supportSubject: "Support Request for Imagine - AI Art",
+    supportBody: "I am facing an issue with my {{device}} {{model}} running {{version}}: ",
 }
