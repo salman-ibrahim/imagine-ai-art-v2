@@ -66,6 +66,11 @@ const themedStyles = StyleService.create({
     }
 })
 
+/**
+ * type = reward & cost = free (is free item)
+ * type = purchase & cost is for paid item
+ * type - 
+ */
 const freeStoreItems = [
     {
         id: 1,

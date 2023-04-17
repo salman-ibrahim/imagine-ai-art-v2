@@ -10,12 +10,47 @@ import { saveGeneratedArtAction, saveGeneratedArtIdsAction } from '../../store/a
 import artDB from '../../db/artDB';
 
 import { strings } from '../../values/strings';
+import { useInterstitialAd, useRewardedInterstitialAd } from 'react-native-google-mobile-ads';
+import { defaults } from '../../values/defaults';
+import { useIsFocused } from '@react-navigation/native';
 
 const ArtActions = ({art}) => {
 
     const styles = useStyleSheet(themedStyles);
 
     const [saved, setSaved] = React.useState(false)
+    const [lastAction, setLastAtion] = React.useState();
+
+    const focused = useIsFocused();
+
+    const {isLoaded, isClosed, load, show} = useInterstitialAd(defaults.interstitialAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
+    // useEffect(() => {
+    //     if(focused && !isLoaded){
+    //         load();
+    //     }
+    // }, [focused])
+
+    useEffect(() => {
+        // Start loading the interstitial straight away
+        load();
+    }, [load]);
+
+    useEffect(() => {
+        if (isClosed) {
+            // Load another ad and perform action
+            performArtAction();
+            load();
+        }
+    }, [isClosed]);
+
+    useEffect(() => {
+        if(isLoaded){
+            console.log('Interstitial Loaded');
+        }
+    }, [isLoaded])
 
     useEffect(() => {
         artDB.createTable()
@@ -25,6 +60,34 @@ const ArtActions = ({art}) => {
     const checkArtSavedStatus = () => {
         let { savedArtIds } = store.getState().artReducer
         setSaved(savedArtIds.includes(art.id))
+    }
+
+    const handleAction = (actionName) => {
+
+        if(isLoaded) {
+            setLastAtion(actionName);
+            show();
+        }
+        else {
+            performArtAction(actionName);
+        }
+    }
+
+    const performArtAction = (artAction = lastAction) => {
+        switch (artAction) {
+            case "save":
+                handleLocalSave();
+                break;
+            case "download":
+                downloadImage()
+                break;
+            case "share":
+                handleShareImage();
+                break;
+            default:
+                toastError("Something went wrong! Try Again!");
+                break;
+        }
     }
 
     const handleLocalSave = () => {
@@ -105,7 +168,7 @@ const ArtActions = ({art}) => {
                 
                 <Divider style={styles.divider} />
 
-                <TouchableOpacity style={styles.singleAction} onPress={downloadImage}>
+                <TouchableOpacity style={styles.singleAction} onPress={() => handleAction('download')}>
                     <View style={styles.alignCenter}>
                         <Icon fill='orange' height={20} width={20} name='download-outline'/>
                         <Text>Download</Text>
@@ -114,7 +177,7 @@ const ArtActions = ({art}) => {
 
                 <Divider style={styles.divider} />
 
-                <TouchableOpacity style={styles.singleAction} onPress={handleShareImage}>
+                <TouchableOpacity style={styles.singleAction} onPress={() => handleAction('share')}>
                     <View style={styles.alignCenter}>
                         <Icon fill='orange' height={20} width={20} name='share-outline'/>
                         <Text>Share</Text>

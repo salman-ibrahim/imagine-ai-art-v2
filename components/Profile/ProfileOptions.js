@@ -9,11 +9,12 @@ import ReceiptIcon from '../../assets/icons/ReceiptIcon';
 import StarIcon from '../../assets/icons/StarIcon';
 import ThemeIcon from '../../assets/icons/ThemeIcon';
 import WalletIcon from '../../assets/icons/WalletIcon';
-import { prepareSupportEmailBody, requestInAppReview } from '../../helpers/commonHelpers';
+import { prepareSupportEmailBody, requestInAppReview, shareApp } from '../../helpers/commonHelpers';
 // import { logoutUser } from '../../helpers/firebaseAuth';
 import { getData } from '../../helpers/secureStore';
 import { ThemeContext } from '../../Theme/theme-context';
 import { strings } from '../../values/strings';
+import ShareIcon from '../../assets/icons/ShareIcon';
 
 const ProfileOptions = () => {
 
@@ -114,6 +115,18 @@ const ProfileOptions = () => {
                         <Text category='h6' style={{marginLeft:20}}>Contact Us</Text>
                     </View>
                     <ExternalLinkIcon height={20} width={20}/>
+                </View>
+            </TouchableOpacity>
+            <Divider/>
+
+            {/* Share App */}
+            <TouchableOpacity onPress={() => shareApp()}>
+                <View style={styles.menuItem}>
+                    <View style={styles.menuTitle}>
+                        <ShareIcon/>
+                        <Text category='h6' style={{marginLeft:20}}>Share</Text>
+                    </View>
+                    <Icon style={styles.tintColor} height={20} width={20} name='chevron-right'/>
                 </View>
             </TouchableOpacity>
             <Divider/>

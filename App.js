@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import React from 'react';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry, Text} from '@ui-kitten/components';
@@ -40,6 +40,7 @@ export default (props) => {
     };
 
     return (
+        <View style={{ flex: 1 }}>
         <Provider store={store}>
             <IconRegistry icons={EvaIconsPack}/>
             <ThemeContext.Provider value={{ theme, toggleTheme }}>   
@@ -52,5 +53,6 @@ export default (props) => {
             </ThemeContext.Provider>
             <Toast />
         </Provider>
+        </View>
     )
 };
