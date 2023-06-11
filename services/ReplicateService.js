@@ -28,7 +28,7 @@ class ReplicateService {
       const { status } = error.response;
       switch (status) {
       case 401:
-        console.log("inside 401")
+        console.log("unauthorized callback made")
         this.unauthorizedCallback();
         break;
       default:
@@ -47,9 +47,9 @@ class ReplicateService {
 }
 
 const options = {
-  baseURL: Constants.expoConfig.extra.PREDICTION_MODEL_STABLE_DIFFUSION_URL,
+  baseURL: Constants.expoConfig.extra.PREDICTION_MODEL_STABILITY_AI_BASE_URL,
 };
-console.log("replicate url is ", options.baseURL)
+console.log("prediction model url is ", options.baseURL)
 const replicateService = new ReplicateService(options);
 
 export default replicateService;

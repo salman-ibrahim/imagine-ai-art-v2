@@ -76,8 +76,8 @@ const freeStoreItems = [
         id: 1,
         title: "Daily Bonus",
         type: 'reward',
-        value: 1,
-        description: '1 Free Brush',
+        value: 2,
+        description: '2 Free Brush',
         cost: 'free',
     },
     // {
@@ -108,8 +108,8 @@ const freeStoreItems = [
         id: 6,
         title: "Watch Ad to Get 1 Free Brush",
         type: 'reward',
-        value: 1,
-        description: '1 Free Brush',
+        value: 2,
+        description: '2 Free Brush',
         cost: 'ad',
     },
 ]

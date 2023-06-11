@@ -14,8 +14,10 @@ const SavedArt = ({savedArt}) => {
     const styles = useStyleSheet(themedStyles);
 
     useEffect(() => {
+        alert('Saved Art')
         // Get data from art DB
         artDB.getImages((art) => {
+            console.log('Saved Art: ', art);
             let artIds = art.map((art) => art.id)
             store.dispatch(saveGeneratedArtAction(art))
             store.dispatch(saveGeneratedArtIdsAction(artIds))

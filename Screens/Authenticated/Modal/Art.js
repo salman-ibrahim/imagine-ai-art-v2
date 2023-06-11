@@ -5,11 +5,12 @@ import { useFocusEffect } from '@react-navigation/native'
 import { toastError, toastSuccess } from '../../../helpers/toasts'
 import ArtActions from '../../../components/Art/ArtActions'
 import artService from '../../../services/ArtService'
-import { convertImageToBase64 } from '../../../helpers/imageHelpers'
+import { addMimeTypeToBase64, convertImageToBase64 } from '../../../helpers/imageHelpers'
 import Base64Image from '../../../components/subcomponents/Base64Image'
 import { refundArtworkPriceToWallet } from '../../../helpers/walletHelpers'
 import { BannerAd, BannerAdSize, useInterstitialAd } from 'react-native-google-mobile-ads'
 import { defaults } from '../../../values/defaults'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
@@ -27,6 +28,8 @@ const CrossIcon = (props) => (
  */
 const Art = ({ navigation, route }) => {
 
+
+    // The code below belongs to AdMob
     const { isLoaded, isClosed, load, show } = useInterstitialAd(defaults.interstitialAdUnitId, {
         requestNonPersonalizedAdsOnly: true,
     });
@@ -43,15 +46,13 @@ const Art = ({ navigation, route }) => {
         }
     }, [isClosed, navigation]);
 
-    const { id, query, image, source, status, isExplicit } = route.params
+    // The code above belongs to AdMob
+
+    const { id, query, image } = route.params
 
     const styles = useStyleSheet(themedStyles);
     
     const [art, setArt] = React.useState({})
-    const [artStatus, setArtStatus] = React.useState(status)
-    const [loading, setLoading] = React.useState(status == "starting")
-    const [intervalId, setIntervalId] = React.useState(null)
-
 
     /**
      * Initialize states that identify if the art is being generated or previous art is being fetched
@@ -59,82 +60,8 @@ const Art = ({ navigation, route }) => {
     useFocusEffect(
         React.useCallback(() => {
             iniStates()
-
-            if(status == 'starting' || status == 'processing') {
-                setLoading(true)
-                setArtStatus(status)
-            }
         }, [id])
     );
-
-
-    /**
-     * Start polling for art status if this is a new art generation
-     */
-    useEffect(() => {
-        if(status == 'starting' || status == 'processing') {
-            const interval = setInterval(() => {
-                if(artStatus == 'starting' || artStatus == 'processing') {
-                    callFetchApi()
-                }
-            } , 5000)
-
-            setIntervalId(interval)
-        }
-
-    }, [artStatus])
-
-
-    /**
-     * Clear interval when art is generated or failed so the polling stops
-     */
-    useEffect(() => {
-        if(artStatus == 'succeeded' || artStatus == 'failed') {
-            clearInterval(intervalId);
-        }
-
-        return () => {
-            clearInterval(intervalId);
-        }
-    }, [artStatus])
-
-    /**
-     * Call the fetch API to get the art status
-     */
-    const callFetchApi = () => {
-        
-        if(!loading){
-            setLoading(true)
-        }
-        
-        artService.fetchArt(id)
-            .then( async (response) => {
-                console.log("RESULT",response.status);
-                setArtStatus(response.status)
-                if(response.status == 'succeeded') {
-                    const base64Image = await convertImageToBase64(response.output[0])
-                    setArt({
-                        id: response.id,
-                        query: response.input.prompt,
-                        image: base64Image,
-                        source: response.output[0]
-                    })
-                    setLoading(false)
-                    toastSuccess('Art generated successfully');
-                }
-                if(response.status == 'failed') {
-                    toastError('Something went wrong, please try again later');
-                    navigateBack()
-                }
-            }).catch((err) => {
-                toastError('Something went wrong, please try again later');
-                setArtStatus('failed')
-                if(!isExplicit){
-                    refundArtworkPriceToWallet()
-                }
-                navigateBack()
-            })
-    }
 
     /**
      * Initialize states
@@ -145,12 +72,7 @@ const Art = ({ navigation, route }) => {
                 id: id,
                 query: query,
                 image: image,
-                source: source
             })
-            setArtStatus(status)
-        }
-        if(image != null) {
-            setLoading(false)
         }
     }
 
@@ -159,8 +81,6 @@ const Art = ({ navigation, route }) => {
      */
     const resetStates = () => {
         setArt({})
-        setArtStatus('succeeded')
-        setLoading(true)
     }
 
     /**
@@ -177,13 +97,6 @@ const Art = ({ navigation, route }) => {
     const BackAction = () => (
         <TopNavigationAction icon={BackIcon} onPress={isLoaded ? show : navigateBack}/>
     )
-        
-    /**
-     * Handle cancel button click to stop the art generation
-     */
-    const handleCancel = () => {
-        // Cancel the art generation
-    }
 
     return (
         <>
@@ -191,29 +104,16 @@ const Art = ({ navigation, route }) => {
 
             <View style={styles.container}>
                 <Text category="h5">{ art.query }</Text>
-                <View style={styles.artContainer}>
-                    {
-                        loading ? 
-                        <>
-                            <Spinner size='giant' />
-                            <Text>Generating your art, this may take upto 15 seconds.</Text>
-                        </>
-                        :
+                {/* <ScrollView style={styles.artView}> */}
+                    <View style={styles.artContainer}>
                         <Base64Image image={art.image} style={styles.art}/>
-                    }
+                    </View>
+                {/* </ScrollView> */}
+                {/* Show the banner everytime art is viewed */}
+                <View style={styles.bannerContainer}>
+                    <BannerAd unitId={defaults.bannerAdUnitId} size={BannerAdSize.BANNER} />
                 </View>
-                {
-                    loading ?
-                    <>
-                        <View style={styles.bannerContainer}>
-                            <BannerAd unitId={defaults.bannerAdUnitId} size={BannerAdSize.BANNER} />
-                        </View>
-                        {/* <Button style={styles.button} onPress={handleCancel} status='danger' accessoryLeft={ CrossIcon }> Cancel </Button>
-                        <Text style={styles.text}>Cancelling the art in progress may cost you.</Text> */}
-                    </>
-                    :
-                    <ArtActions art={art} />
-                }
+                <ArtActions art={art} />
             </View>
         </>
     )
@@ -232,9 +132,14 @@ const themedStyles = StyleService.create({
     bannerContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+        marginVertical: 10
     },  
+    artView: {
+        flexGrow: 1
+    },
     artContainer: {
         flex: 1,
+        margin: 'auto',
         justifyContent: 'center',
         alignItems: 'center',
     },

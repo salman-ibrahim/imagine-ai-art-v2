@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
+    "start": "API_BASE_URL=\"imagine-api.gamearina.com\" PREDICTION_MODEL_STABILITY_AI_BASE_URL=\"https://api.replicate.com\" PREDICTION_MODEL_STABILITY_AI_BASE_URL=\"https://api.stability.ai\" PUBLIC_GOOGLE_SDK_KEY=\"goog_ZhDWrkqzQfoPokzYfixcsjHAYId\" STABILITY_AI_API_KEY=\"sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8\" expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "start-dev": "API_BASE_URL=\"imagine-api.gamearina.com\" PREDICTION_MODEL_STABILITY_AI_BASE_URL=\"https://api.replicate.com\" PREDICTION_MODEL_STABILITY_AI_BASE_URL=\"https://api.stability.ai\" PUBLIC_GOOGLE_SDK_KEY=\"goog_ZhDWrkqzQfoPokzYfixcsjHAYId\" STABILITY_AI_API_KEY=\"sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8\" expo start --dev-client",
+    "build-android": "eas build --platform android --profile production"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
@@ -45,6 +47,7 @@
     "react-native-svg": "12.3.0",
     "react-native-timer-countdown": "git+https://github.com/smarkets/react-native-timer-countdown.git",
     "react-native-toast-message": "^2.1.5",
+    "react-native-uuid": "^2.0.1",
     "react-redux": "^8.0.5",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.2"
@@ -52,6 +55,9 @@
   "devDependencies": {
     "@babel/core": "^7.18.6",
     "reactotron-react-native": "^5.0.3"
+  },
+  "engines": {
+    "node": ">=16.18.1"
   },
   "private": true
 }

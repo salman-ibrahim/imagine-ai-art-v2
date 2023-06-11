@@ -5,16 +5,16 @@ const db = SQLite.openDatabase('imagine.db');
 const createTable = () => {
   db.transaction(tx => {
     tx.executeSql(
-        'create table if not exists images (id text primary key, query text, image text, source text);'
+        'create table if not exists images (id text primary key, query text, image text);'
     );
   });
 };
 
-const insertImage = (id, query, image, source) => {
+const insertImage = (id, query, image) => {
     db.transaction(tx => {
         tx.executeSql(
-            'insert into images (id, query, image, source) values (?, ?, ?, ?);',
-            [id, query, image, source]
+            'insert into images (id, query, image) values (?, ?, ?);',
+            [id, query, image]
         );
     });
 };

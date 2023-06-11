@@ -10,7 +10,9 @@
       "env": {
         "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com",
-        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId"
+        "PREDICTION_MODEL_STABILITY_AI_BASE_URL": "https://api.stability.ai",
+        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId",
+        "STABILITY_AI_API_KEY": "sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8"
       }
     },
     "staging" : {
@@ -20,7 +22,9 @@
       "env": {
         "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com",
-        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId"
+        "PREDICTION_MODEL_STABILITY_AI_BASE_URL": "https://api.stability.ai",
+        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId",
+        "STABILITY_AI_API_KEY": "sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8"
       }
     },
     "preview": {
@@ -30,14 +34,18 @@
       "env": {
         "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com",
-        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId"
+        "PREDICTION_MODEL_STABILITY_AI_BASE_URL": "https://api.stability.ai",
+        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId",
+        "STABILITY_AI_API_KEY": "sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8"
       }
     },
     "production": {
       "env": {
         "API_BASE_URL": "imagine-api.gamearina.com",
         "PREDICTION_MODEL_STABLE_DIFFUSION_URL": "https://api.replicate.com",
-        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId"
+        "PREDICTION_MODEL_STABILITY_AI_BASE_URL": "https://api.stability.ai",
+        "PUBLIC_GOOGLE_SDK_KEY": "goog_ZhDWrkqzQfoPokzYfixcsjHAYId",
+        "STABILITY_AI_API_KEY": "sk-2S5HQQs533jbB1afp3MEaWwz88qhw3ZCDqMHl1arlkBrjdh8"
       }
     }
   },

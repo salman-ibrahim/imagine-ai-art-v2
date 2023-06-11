@@ -21,7 +21,11 @@ export const convertImageToBase64 = (url) => {
     });
 }
 
-export const downloadImageToDCIM = async (image, name, source) => {
+export const addMimeTypeToBase64 = (base64, mimeType = "application/octet-stream") => {
+    return `data:${mimeType};base64,${base64}`;
+}
+
+export const downloadImageToDCIM = async (image, name) => {
     try{
         const imageUri = FileSystem.cacheDirectory + name+'.png';
         const base64Image = image.replace('data:application/octet-stream;base64,','');

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Button, Divider, Icon, Input, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components';
 import React, { useEffect } from 'react'
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Touchable, TouchableOpacity, View } from 'react-native';
 import { deductArtworkPriceFromWallet } from '../../helpers/walletHelpers';
 import { toastError, toastInfo } from '../../helpers/toasts';
 import artService from '../../services/ArtService';
@@ -10,7 +10,9 @@ import { defaults } from '../../values/defaults';
 import { useSelector } from 'react-redux';
 import { nsfw } from '../../values/dictionary';
 import { RewardedAd, RewardedAdEventType, useRewardedAd } from 'react-native-google-mobile-ads';
-
+import GeneratingArtModal from '../../modals/GeneratingArtModal';
+import uuid from 'react-native-uuid';
+import { addMimeTypeToBase64 } from '../../helpers/imageHelpers';
 
 const rewarded = RewardedAd.createForAdRequest(defaults.rewardedAdUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -46,6 +48,10 @@ const GenerateArt = () => {
     const [data, setData] = React.useState({});
     const [adLoaded, setAdLoaded] = React.useState(false);
     const [isExplicit, setIsExplicit] = React.useState(false);
+    
+    // Art styles
+    const [stylePresets, setStylePresets] = React.useState(stylePresetsData);
+    const [selectedStyle, setSelectedStyle] = React.useState(stylePresetsData[0]);
 
     const { isLoaded, isClosed, isEarnedReward , load, show, reward } = useRewardedAd(defaults.rewardedAdUnitId, {
         requestNonPersonalizedAdsOnly: true,
@@ -110,27 +116,65 @@ const GenerateArt = () => {
         }
     }
 
+    const prepareRequestData = () => {
+        const requestData = {
+            engine_id: "stable-diffusion-v1-5",
+            height: 512,
+            width: 512,
+            text_prompts: [
+                {
+                    "text": multilineInputState.value,
+                    "weight": 0.5
+                }
+            ],
+            steps: 10,
+            style_preset: selectedStyle.identifier,
+        }
+        return requestData;
+    }
+
+    const prepareArtData = (base64, finishReason) => {
+        const artData = {
+            id: uuid.v4(),
+            query: multilineInputState.value.trim(),
+            image: addMimeTypeToBase64(base64),
+            status: finishReason, // CONTENT_FILTERED, ERROR, SUCCESS
+        }
+        return artData;
+    }
+
     const handleGenerateArtByVideo = () => {
         if(!loading) {
             if(multilineInputState.value.trim() !== "") {
                 setLoading(true)
                 toastInfo('Generating Art');
-                artService.placeArtJob(multilineInputState.value).then((response) => {
+                artService.generateArt(prepareRequestData()).then((response) => {
                     setData(response);
-                    setLoading(false);
 
-                    navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, source: null, status: 'starting', isExplicit: isExplicit });
+                    navigator.navigate('ArtModal', prepareArtData(response.image, response.finish_reason));
 
                 }).catch((err) => {
-                    setLoading(false);
-                    console.log(err);
                     if(isExplicit){
-                        toastError('NSFW Content Found, Art Generation Failed');
+                        console.log(err);
+                        if(err.name == 'invalid_prompts') {
+                            toastError(err.message, "NSFW Content Found");
+                        }
+                        else {
+                            toastError('NSFW Content Found');
+                        }
                     }
                     else {
-                        toastError('Something went wrong');
+                        if(err.name) {
+                            toastError(err.message);
+                        }
+                        else {
+                            toastError('Something went wrong');
+                        }
                     }
                 })
+                .finally(() => {
+                    setLoading(false);
+                });
             }
             else {
                 toastInfo('Please enter some text');
@@ -151,22 +195,37 @@ const GenerateArt = () => {
             if(multilineInputState.value.trim() !== "") {
                 setLoading(true)
                 toastInfo('Generating Art');
-                artService.placeArtJob(multilineInputState.value).then((response) => {
+                const query = multilineInputState.value.trim();
+
+                artService.generateArt(prepareRequestData()).then((response) => {
                     setData(response);
-                    setLoading(false);
+                    // console.log("Finished: ",response.artifacts[0].finishReason);
+
                     deductArtworkPriceFromWallet()
-                    navigator.navigate('ArtModal', { id: response.id, query: response.input.prompt, image: null, source: null, status: 'starting' });
+                    navigator.navigate('ArtModal', prepareArtData(response.artifacts[0].base64, response.artifacts[0].finishReason));
 
                 }).catch((err) => {
-                    setLoading(false);
                     console.log(err);
                     if(isExplicit){
-                        toastError('NSFW Content Found');
+                        console.log(err);
+                        if(err.name == 'invalid_prompts') {
+                            toastError(err.message, "NSFW Content Found");
+                        }
+                        else {
+                            toastError('NSFW Content Found');
+                        }
                     }
                     else {
-                        toastError('Something went wrong');
+                        if(err.name) {
+                            toastError(err.message);
+                        }
+                        else {
+                            toastError('Something went wrong');
+                        }
                     }
-                })
+                }).finally(() => {
+                    setLoading(false);
+                });
             }
             else {
                 toastInfo('Please enter some text');
@@ -185,6 +244,20 @@ const GenerateArt = () => {
                     placeholder='Astronaut Riding Horse on Mars'
                     {...multilineInputState}
                 />
+                <ScrollView horizontal style={styles.artDataContainer}>
+                    {
+                        stylePresets.map((style, index) => {
+                            return (
+                                <View style={style.identifier == selectedStyle.identifier ? styles.artStyleContainerSelected : styles.artStyleContainer}>
+                                    <TouchableOpacity onPress={() => { setSelectedStyle(style) }}>
+                                        <Text>{style.name}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        })
+                    }
+                    {/* <Button size='tiny' onPress={() => {}}>CHANGE</Button> */}
+                </ScrollView>
                 { isExplicit && <Text status={'warning'} style={styles.infoText}>Explicit prompts may lead to failure, and you may lose brushes.</Text> }
             </View>
 
@@ -193,9 +266,10 @@ const GenerateArt = () => {
                 (
                     <Button style={loading? styles.buttonDisabled : styles.buttonVideo} onPress={startAdToClaimFreeArt} accessoryRight={ loading ? '' : videoClipIcon}> { !adsReadyToLoad ? <Spinner /> : 'Watch Video to Generate' }</Button>     
                 ) : (
-                    <Button style={loading? styles.buttonDisabled : styles.button} onPress={handleGenerateArt} accessoryRight={ loading ? '' : arrowRightIcon}> { loading ? <Spinner /> : 'Generate Art' }</Button>
+                    <Button style={loading? styles.buttonDisabled : styles.button} onPress={handleGenerateArt} accessoryRight={arrowRightIcon}>Generate Art</Button>
                 )
             }
+            <GeneratingArtModal toggle={() => {}} visible={loading} message={"Generating Art"} />
         </View>
     )
 }
@@ -216,6 +290,30 @@ const themedStyles = StyleService.create({
     },
     pointsContainer: {
         
+    },
+    artDataContainer: {
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // alignItems: 'center',
+        overflow:'hidden',
+        marginTop: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
+        backgroundColor: 'background-basic-color-2',
+    },
+    artStyleContainer: {
+        marginHorizontal: 5,
+        borderRadius: 5,
+        paddingHorizontal:10,
+        paddingVertical:5,
+        backgroundColor: 'background-basic-color-4',
+    },
+    artStyleContainerSelected: {
+        marginHorizontal: 5,
+        borderRadius: 5,
+        paddingHorizontal:10,
+        paddingVertical:5,
+        backgroundColor: 'color-primary-500',
     },
     dayContainer: {
         flex: 1,
@@ -279,3 +377,74 @@ const themedStyles = StyleService.create({
         marginTop:5
     }
 });
+
+const stylePresetsData = [
+    {
+      name: "3D Model",
+      identifier: "3d-model"
+    },
+    {
+      name: "Analog Film",
+      identifier: "analog-film"
+    },
+    {
+      name: "Anime",
+      identifier: "anime"
+    },
+    {
+      name: "Cinematic",
+      identifier: "cinematic"
+    },
+    {
+      name: "Comic Book",
+      identifier: "comic-book"
+    },
+    {
+      name: "Digital Art",
+      identifier: "digital-art"
+    },
+    {
+      name: "Enhance",
+      identifier: "enhance"
+    },
+    {
+      name: "Fantasy Art",
+      identifier: "fantasy-art"
+    },
+    {
+      name: "Isometric",
+      identifier: "isometric"
+    },
+    {
+      name: "Line Art",
+      identifier: "line-art"
+    },
+    {
+      name: "Low Poly",
+      identifier: "low-poly"
+    },
+    {
+      name: "Modeling Compound",
+      identifier: "modeling-compound"
+    },
+    {
+      name: "Neon Punk",
+      identifier: "neon-punk"
+    },
+    {
+      name: "Origami",
+      identifier: "origami"
+    },
+    {
+      name: "Photographic",
+      identifier: "photographic"
+    },
+    {
+      name: "Pixel Art",
+      identifier: "pixel-art"
+    },
+    {
+      name: "Tile Texture",
+      identifier: "tile-texture"
+    }
+]  
