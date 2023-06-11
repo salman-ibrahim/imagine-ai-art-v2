@@ -106,10 +106,10 @@ const freeStoreItems = [
     // },
     {
         id: 6,
-        title: "Watch Ad to Get 1 Free Brush",
+        title: "Watch Ad to Get Free Brushes",
         type: 'reward',
-        value: 2,
-        description: '2 Free Brush',
+        value: 0,
+        description: 'Upto 5 Free Brush',
         cost: 'ad',
     },
 ]

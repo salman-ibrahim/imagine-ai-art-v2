@@ -9,10 +9,11 @@ import store from '../../store';
 import { defaults } from '../../values/defaults';
 import { useSelector } from 'react-redux';
 import { nsfw } from '../../values/dictionary';
-import { RewardedAd, RewardedAdEventType, useRewardedAd } from 'react-native-google-mobile-ads';
+import { RewardedAd, RewardedAdEventType, useRewardedAd, useRewardedInterstitialAd } from 'react-native-google-mobile-ads';
 import GeneratingArtModal from '../../modals/GeneratingArtModal';
 import uuid from 'react-native-uuid';
 import { addMimeTypeToBase64 } from '../../helpers/imageHelpers';
+import { debounce } from 'lodash';
 
 const rewarded = RewardedAd.createForAdRequest(defaults.rewardedAdUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -57,20 +58,38 @@ const GenerateArt = () => {
         requestNonPersonalizedAdsOnly: true,
     });
 
+    const { isLoaded: isInterstitialLoaded, isClosed: isInterstitialClosed, isEarnedReward: isInterstitialEarnedReward ,load: loadInterstitial, show: showInterstitial } = useRewardedInterstitialAd(defaults.rewardedInterstitilAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
     useEffect(() => {
         // Start Loading Right 
         if(adsReadyToLoad){
-            load()
+            if(!isLoaded) {
+                load()
+            }
+
+            if(!isInterstitialLoaded) {
+                loadInterstitial()
+            }
         }
-    },[load, adsReadyToLoad])
+    },[isLoaded, isInterstitialLoaded, adsReadyToLoad])
 
     useEffect(() => {
         if(isClosed) {
-            // Perform action if the advert is closed
-            load()
+            if(isClosed){
+                // Perform action if the advert is closed
+                load()
+            }
+
+            if(isInterstitialClosed){
+                // Perform action if the advert is closed
+                loadInterstitial()
+            }
         }
     }, [isClosed])
 
+    // Check if the earned status changed for the rewarded ad
     useEffect(() => {
         if(isEarnedReward){
             // Perform action intended for rewarded ad completion
@@ -79,11 +98,20 @@ const GenerateArt = () => {
         }
     },[isEarnedReward])
 
+    // Check if the earned status changed for the interstitial rewarded ad
     useEffect(() => {
-        if(isLoaded){
+        if(isInterstitialEarnedReward){
+            // Perform action intended for rewarded ad completion
+            claimReward()
+            loadInterstitial()
+        }
+    },[isInterstitialEarnedReward])
+
+    useEffect(() => {
+        if(isLoaded || isInterstitialLoaded){
             console.log("Rewarded Advert Loaded for Free Art");
         }
-    }, [isLoaded])
+    }, [isLoaded, isInterstitialLoaded])
 
     const multilineInputState = useInputState();
 
@@ -110,11 +138,19 @@ const GenerateArt = () => {
         else if(isLoaded) {
             show();
         }
+        else if(isInterstitialLoaded) {
+            showInterstitial();
+        }
         else {
             toastInfo('Advert Not Loaded Yet, Try Again!');
-            load();
+            debouncedLoadAndShowAds();
         }
     }
+
+    const debouncedLoadAndShowAds = debounce(() => {
+        load();
+        loadInterstitial();
+      }, 500); // Debounce with a delay of 500 milliseconds
 
     const prepareRequestData = () => {
         const requestData = {
@@ -127,7 +163,7 @@ const GenerateArt = () => {
                     "weight": 0.5
                 }
             ],
-            steps: 10,
+            steps: 50,
             style_preset: selectedStyle.identifier,
         }
         return requestData;
@@ -138,7 +174,7 @@ const GenerateArt = () => {
             id: uuid.v4(),
             query: multilineInputState.value.trim(),
             image: addMimeTypeToBase64(base64),
-            status: finishReason, // CONTENT_FILTERED, ERROR, SUCCESS
+            // status: finishReason, // CONTENT_FILTERED, ERROR, SUCCESS
         }
         return artData;
     }
@@ -199,7 +235,6 @@ const GenerateArt = () => {
 
                 artService.generateArt(prepareRequestData()).then((response) => {
                     setData(response);
-                    // console.log("Finished: ",response.artifacts[0].finishReason);
 
                     deductArtworkPriceFromWallet()
                     navigator.navigate('ArtModal', prepareArtData(response.artifacts[0].base64, response.artifacts[0].finishReason));
@@ -235,7 +270,7 @@ const GenerateArt = () => {
 
     return (
         <View style={styles.container}>
-            <Text category='h4' style={styles.heading}>What are your Imaginations?</Text>
+            <Text category='h5' style={styles.heading}>What's on your mind?</Text>
             <View horizontal style={styles.pointsContainer}>
                 <Input
                     multiline={true}
@@ -244,11 +279,12 @@ const GenerateArt = () => {
                     placeholder='Astronaut Riding Horse on Mars'
                     {...multilineInputState}
                 />
+                <Text style={{marginTop:8, paddingLeft:5}} category='label'>ART STYLE</Text>
                 <ScrollView horizontal style={styles.artDataContainer}>
                     {
                         stylePresets.map((style, index) => {
                             return (
-                                <View style={style.identifier == selectedStyle.identifier ? styles.artStyleContainerSelected : styles.artStyleContainer}>
+                                <View key={index} style={style.identifier == selectedStyle.identifier ? styles.artStyleContainerSelected : styles.artStyleContainer}>
                                     <TouchableOpacity onPress={() => { setSelectedStyle(style) }}>
                                         <Text>{style.name}</Text>
                                     </TouchableOpacity>
@@ -296,7 +332,7 @@ const themedStyles = StyleService.create({
         // justifyContent: 'space-between',
         // alignItems: 'center',
         overflow:'hidden',
-        marginTop: 10,
+        marginTop: 3,
         paddingVertical: 5,
         borderRadius: 10,
         backgroundColor: 'background-basic-color-2',
@@ -366,7 +402,7 @@ const themedStyles = StyleService.create({
         tintColor: 'text-basic-color'
     },
     heading: {
-        marginVertical: 16,
+        marginVertical: 5,
     },
     input: {
         borderRadius:10

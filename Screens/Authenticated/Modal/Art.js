@@ -1,16 +1,11 @@
-import { View } from 'react-native'
+import { BackHandler, View } from 'react-native'
 import React, { useEffect } from 'react'
-import { Button, Icon, Spinner, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
+import { Icon, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
-import { toastError, toastSuccess } from '../../../helpers/toasts'
 import ArtActions from '../../../components/Art/ArtActions'
-import artService from '../../../services/ArtService'
-import { addMimeTypeToBase64, convertImageToBase64 } from '../../../helpers/imageHelpers'
 import Base64Image from '../../../components/subcomponents/Base64Image'
-import { refundArtworkPriceToWallet } from '../../../helpers/walletHelpers'
 import { BannerAd, BannerAdSize, useInterstitialAd } from 'react-native-google-mobile-ads'
 import { defaults } from '../../../values/defaults'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const BackIcon = (props) => (
     <Icon {...props} name='arrow-back' />
@@ -53,6 +48,28 @@ const Art = ({ navigation, route }) => {
     const styles = useStyleSheet(themedStyles);
     
     const [art, setArt] = React.useState({})
+
+    // [DEPRECATED] - in favor of art actions
+    /**
+     * Add a back press handler to make sure user sees an ad before going back
+     */
+    // useEffect(() => {
+    //     const backAction = () => {
+    //         if(isLoaded) {
+    //             show()
+    //         } else {
+    //             navigateBack()
+    //         }
+    //         return true;
+    //     };
+
+    //     const backHandler = BackHandler.addEventListener(
+    //         "hardwareBackPress",
+    //         backAction
+    //     );
+            
+    //     backHandler.remove();
+    // }, []);
 
     /**
      * Initialize states that identify if the art is being generated or previous art is being fetched
@@ -103,12 +120,12 @@ const Art = ({ navigation, route }) => {
             <TopNavigation title="Result" alignment="center" accessoryLeft={BackAction}/>
 
             <View style={styles.container}>
-                <Text category="h5">{ art.query }</Text>
-                {/* <ScrollView style={styles.artView}> */}
+                <Text category="h5">{ query }</Text>
+
                     <View style={styles.artContainer}>
-                        <Base64Image image={art.image} style={styles.art}/>
+                        <Base64Image image={image} style={styles.art}/>
                     </View>
-                {/* </ScrollView> */}
+
                 {/* Show the banner everytime art is viewed */}
                 <View style={styles.bannerContainer}>
                     <BannerAd unitId={defaults.bannerAdUnitId} size={BannerAdSize.BANNER} />
