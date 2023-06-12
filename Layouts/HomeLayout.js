@@ -44,6 +44,7 @@ const HomeLayout = ({navigator, profileVisible}) => {
       console.log('adapterStatuses', adapterStatuses)
       store.dispatch(setAdsReadyToLoadAction(true))
       setMobileAdsReady(true);
+      console.log('Mobile ads initialized');
     } catch (error) {
       console.log('Failed to initialize mobile ads:', error)
       // retry after a delay of 5 seconds

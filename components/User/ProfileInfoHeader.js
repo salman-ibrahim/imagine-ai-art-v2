@@ -17,11 +17,12 @@ const ProfileInfoHeader = (props) => {
 
   const [loading, setLoading] = React.useState(true)
 
+  // initialize wallet balance or generate a new wallet
   useEffect(() => {
     getData('wallet')
     .then((wallet) => {
       if(wallet == undefined) {
-        storeData('wallet', '3')
+        storeData('wallet', '4')
         store.dispatch(setUserWalletAction(3))
       }
       else {

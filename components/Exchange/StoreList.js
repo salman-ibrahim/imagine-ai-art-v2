@@ -72,14 +72,14 @@ const themedStyles = StyleService.create({
  * type - 
  */
 const freeStoreItems = [
-    {
-        id: 1,
-        title: "Daily Bonus",
-        type: 'reward',
-        value: 1,
-        description: '1 Free Brush',
-        cost: 'free',
-    },
+    // {
+    //     id: 1,
+    //     title: "Daily Bonus",
+    //     type: 'reward',
+    //     value: 2,
+    //     description: '2 Free Brush',
+    //     cost: 'free',
+    // },
     // {
     //     id: 3,
     //     title: "Test Pack",
@@ -106,10 +106,10 @@ const freeStoreItems = [
     // },
     {
         id: 6,
-        title: "Watch Ad to Get 1 Free Brush",
+        title: "Watch Ad to Get Free Brushes",
         type: 'reward',
-        value: 1,
-        description: '1 Free Brush',
+        value: 0,
+        description: 'Upto 5 Free Brush',
         cost: 'ad',
     },
 ]

@@ -113,7 +113,7 @@ const ArtActions = ({art}) => {
     }
 
     const handleSaveNewImage = (savedArtIds, targetId) => {
-        const {id, image, query, source} = art
+        const {id, image, query} = art
 
         let newSavedArtIds = [...savedArtIds, targetId]
         let newSavedArt = [...store.getState().artReducer.savedArt, art]
@@ -121,7 +121,7 @@ const ArtActions = ({art}) => {
         store.dispatch(saveGeneratedArtIdsAction(newSavedArtIds))
         store.dispatch(saveGeneratedArtAction(newSavedArt))
 
-        artDB.insertImage(id, query, image, source)
+        artDB.insertImage(id, query, image)
         setSaved(true)
     }
 
@@ -130,9 +130,9 @@ const ArtActions = ({art}) => {
             requestCameraRollPermission()
                 .then( async (permissionGranted) => {
                     if(permissionGranted) {
-                        const { image, query, source } = art
+                        const { image, query } = art
                         const imageName = await convertStringToSlug(query)
-                        downloadImageToDCIM(image, imageName, source)
+                        downloadImageToDCIM(image, imageName)
                         toastSuccess("Image Downloaded")
                     }
                 })
@@ -149,7 +149,7 @@ const ArtActions = ({art}) => {
 
     const handleShareImage = async () => {
         try {
-            const { image, id, query, source } = art
+            const { image, query } = art
             shareImage(image, query, strings.shareMessage)
         } catch (error) {
             toastError("Error sharing image")

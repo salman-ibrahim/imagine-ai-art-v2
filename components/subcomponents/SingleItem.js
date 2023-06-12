@@ -4,12 +4,12 @@ import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 
 const SingleItem = (props) => {
-    const { id, query, image, source } = props.item;
+    const { id, query, image } = props.item;
     const styles = useStyleSheet(themedStyles);
     const navigation = useNavigation();
 
     const viewArt = () => {
-        navigation.navigate("ArtModal", { id, query, image, source, status: 'succeeded'});
+        navigation.navigate("ArtModal", { id, query, image});
     }
     
     return (

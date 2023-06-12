@@ -2,7 +2,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { Button, Icon, ListItem, Spinner, StyleService, useStyleSheet } from '@ui-kitten/components'
 import { completePurchase } from '../../helpers/walletHelpers';
-import {RewardedAd, RewardedAdEventType, TestIds, useRewardedAd} from 'react-native-google-mobile-ads';
+import {RewardedAd, RewardedAdEventType, TestIds, useRewardedAd, useRewardedInterstitialAd} from 'react-native-google-mobile-ads';
 import { defaults } from '../../values/defaults';
 import { toastInfo } from '../../helpers/toasts';
 import { getData, storeData } from '../../helpers/secureStore';
@@ -35,6 +35,10 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
         requestNonPersonalizedAdsOnly: true,
     });
 
+    const { isLoaded: isInterstitialLoaded, isClosed: isInterstitialClosed, isEarnedReward: isInterstitialEarnedReward , load: loadInterstitial, show: showInterstitial, reward: interstitialReward } = useRewardedInterstitialAd(defaults.rewardedInterstitilAdUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+
     // useEffect(() => {
     //     if(item.cost == 'ad' && !isLoaded && focused) {
     //         console.log(focused);
@@ -45,17 +49,28 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
 
     useEffect(() => {
         // Start Loading Right 
-        if(item.cost == 'ad' && adsReadyToLoad){
-            load()
+        if(item.cost == 'ad' && adsReadyToLoad && focused){
+            if(!isLoaded) {
+                load()
+            }
+
+            if(!isInterstitialLoaded) {
+                loadInterstitial()
+            }
         }
-    },[load, adsReadyToLoad])
+    },[focused, adsReadyToLoad])
 
     useEffect(() => {
         if(isClosed) {
             // Perform action if the advert is closed
             load()
         }
-    }, [isClosed])
+        
+        if(isInterstitialClosed) {
+            // Perform action if the advert is closed
+            loadInterstitial()
+        }
+    }, [isClosed, isInterstitialClosed])
 
     useEffect(() => {
         if(isEarnedReward){
@@ -66,10 +81,18 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
     },[isEarnedReward])
 
     useEffect(() => {
-        if(isLoaded){
+        if(isInterstitialEarnedReward){
+            // Perform action intended for rewarded ad completion
+            console.log('User earned reward of ', interstitialReward.amount);
+            claimReward(interstitialReward.amount)
+        }
+    },[isInterstitialEarnedReward])
+
+    useEffect(() => {
+        if(isLoaded, isInterstitialLoaded){
             console.log("Rewarded Advert Loaded for free brush");
         }
-    }, [isLoaded])
+    }, [isLoaded, isInterstitialLoaded])
 
     // Effect for Rewarded Video Ad
     // useEffect(() => {
@@ -136,7 +159,7 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
                 }
             </Button>
         :
-        <Button style={styles.button} disabled={!isLoaded} onPress={showRewardedAd} accessoryRight={isLoaded ? renderVideoIcon : <ActivityIndicator/>}></Button>
+        <Button style={styles.button} disabled={!isLoaded && !isInterstitialLoaded} onPress={showRewardedAd} accessoryRight={(isLoaded || isInterstitialLoaded) ? renderVideoIcon : <ActivityIndicator/>}></Button>
     )
 
     const claimReward = (amount) => {
@@ -144,7 +167,13 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
             // setLoaded(false)
             completePurchase(amount)
             setTimeout(() => {
-                load();
+                if(!isLoaded) {
+                    load();
+                }
+
+                if(!isInterstitialLoaded){
+                    loadInterstitial();
+                }
             }, 3000);
         }
         else {
@@ -177,8 +206,12 @@ const StoreRewardItem = ({item, rewardClaimAvailable, adsReadyToLoad}) => {
         if(isLoaded){
             show();
         }
+        else if(isInterstitialLoaded) {
+            showInterstitial();
+        }
         else {
             load();
+            loadInterstitial();
             toastInfo('Ad is not loaded yet.', 'Please Wait')
         }
     }
