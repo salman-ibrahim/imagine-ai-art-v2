@@ -1,4 +1,18 @@
 {
+    "expo": {
+        "name": "Imagine - AI Art",
+        "slug": "imagine-ai-art",
+        "plugins": [
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "targetSdkVersion": 33
+                    }
+                }
+            ]
+        ]
+    },
     "react-native-google-mobile-ads": {
         "android_app_id": "ca-app-pub-2313151984818754~2579701348"
     }
